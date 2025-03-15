@@ -3,9 +3,9 @@ import Foundation
 class MongoDBManager {
     static let shared = MongoDBManager()
 
-    private let baseURL = "https://data.mongodb-api.com/app/YOUR_APP_ID/endpoint/data/v1/action"
-    private let apiKey = "YOUR_API_KEY"
-    private let databaseName = "NutriSnap"
+    private let baseURL = "https://data.mongodb-api.com/app/67d07e18cbf53618b5f6f80b/endpoint/data/v1/action"
+    private let apiKey = "58dc8397-3be1-49d3-8b2c-40bfa2434637"
+    private let databaseName = "NutriSnapDB"
     
     // MARK: - User Management
     private let usersCollection = "users"
