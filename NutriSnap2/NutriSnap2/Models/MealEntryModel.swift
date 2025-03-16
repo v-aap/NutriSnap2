@@ -1,20 +1,22 @@
 import Foundation
+import RealmSwift
 
-struct MealEntry {
-    var id = UUID()
-    var date: Date
-    var foodName: String
-    var calories: Int
-    var carbs: Int
-    var protein: Int
-    var fats: Int
-    var isManualEntry: Bool
-    var mealType: String
+class MealEntry: Object, ObjectKeyIdentifiable {
+    @Persisted(primaryKey: true) var id: ObjectId = ObjectId.generate()
+    @Persisted var date: Date
+    @Persisted var foodName: String
+    @Persisted var calories: Int
+    @Persisted var carbs: Int
+    @Persisted var protein: Int
+    @Persisted var fats: Int
+    @Persisted var isManualEntry: Bool
+    @Persisted var mealType: String
 
     static let mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"]
 
     // Explicit initializer
-    init(date: Date, foodName: String, calories: Int, carbs: Int, protein: Int, fats: Int, isManualEntry: Bool, mealType: String) {
+    convenience init(date: Date, foodName: String, calories: Int, carbs: Int, protein: Int, fats: Int, isManualEntry: Bool, mealType: String) {
+        self.init()
         self.date = date
         self.foodName = foodName
         self.calories = calories

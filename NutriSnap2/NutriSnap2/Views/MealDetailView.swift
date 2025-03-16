@@ -1,22 +1,26 @@
 import SwiftUI
+import RealmSwift
 
 struct MealDetailView: View {
     var meal: MealEntry
     @State private var navigateToEdit = false
+    @State private var showDeleteConfirmation = false
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         VStack {
             Text(meal.foodName)
                 .font(.largeTitle)
+                .bold()
                 .padding()
 
-            Text("Calories: \(meal.calories)")
+            Text("Meal Type: \(meal.mealType)")
                 .font(.title2)
-                .padding()
+                .padding(.bottom, 5)
 
-            Text("Carbs: \(meal.carbs)g | Protein: \(meal.protein)g | Fats: \(meal.fats)g")
-                .font(.body)
-                .foregroundColor(.gray)
+            // ✅ Pie Chart for Macronutrients
+            PieChartView(carbs: meal.carbs, protein: meal.protein, fats: meal.fats, totalCalories: meal.calories)
+                .frame(height: 250) // Adjust size as needed
                 .padding()
 
             Text("Date: \(meal.date, style: .date)")
@@ -25,40 +29,53 @@ struct MealDetailView: View {
 
             Spacer()
 
-            Button(action: {
-                navigateToEdit = true
-            }) {
-                Text("Edit Meal")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(width: 200, height: 50)
-                    .background(Color.green)
-                    .cornerRadius(10)
+            HStack {
+                Button(action: {
+                    navigateToEdit = true
+                }) {
+                    Text("Edit Meal")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 150, height: 50)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                }
+                .padding()
+
+                Button(action: {
+                    showDeleteConfirmation = true
+                }) {
+                    Text("Delete Meal")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 150, height: 50)
+                        .background(Color.red)
+                        .cornerRadius(10)
+                }
+                .padding()
+                .alert(isPresented: $showDeleteConfirmation) {
+                    Alert(
+                        title: Text("Confirm Deletion"),
+                        message: Text("Are you sure you want to delete this meal? This action cannot be undone."),
+                        primaryButton: .destructive(Text("Delete")) {
+                            deleteMeal()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
             }
-            .padding()
         }
         .navigationTitle("Meal Details")
         .fullScreenCover(isPresented: $navigateToEdit) {
             MealEntryView(meal: meal) // ✅ Opens MealEntryView for editing
         }
     }
-}
 
-// MARK: - Preview
-struct MealDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            MealDetailView(meal: MealEntry(
-                date: Date(),
-                foodName: "Example Meal",
-                calories: 500,
-                carbs: 40,
-                protein: 35,
-                fats: 20,
-                isManualEntry: true,
-                mealType: "Breakfast"
-            ))
-        }
+    // Delete meal and go back to previous screen
+    private func deleteMeal() {
+        RealmManager.shared.deleteMeal(meal: meal)
+        presentationMode.wrappedValue.dismiss()
     }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 struct SignUpView: View {
     @StateObject private var viewModel = SignUpViewModel()
     @State private var navigateToSignIn = false
-    
+
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -11,55 +11,76 @@ struct SignUpView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 40)
-                
-                TextField("First Name", text: $viewModel.firstName)
+
+                // Required Fields with Validation Indication
+                TextField("First Name *", text: $viewModel.firstName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
-                TextField("Last Name", text: $viewModel.lastName)
+
+                TextField("Last Name *", text: $viewModel.lastName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
-                TextField("name@example.com", text: $viewModel.email)
+
+                TextField("name@example.com *", text: $viewModel.email)
                     .keyboardType(.emailAddress)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
-                SecureField("Password", text: $viewModel.password)
+
+                SecureField("Password *", text: $viewModel.password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
-                SecureField("Confirm Password", text: $viewModel.confirmPassword)
+
+                SecureField("Confirm Password *", text: $viewModel.confirmPassword)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
+
                 TextField("Daily Calorie Goal (Optional)", text: $viewModel.dailyCalorieGoal)
                     .keyboardType(.numberPad)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
+
+                // Disable button if form is invalid
                 Button(action: {
                     viewModel.signUp()
-                    navigateToSignIn = true
                 }) {
                     Text("Sign Up")
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.green)
+                        .background(viewModel.isFormValid ? Color.green : Color.gray) // Disabled if invalid
                         .cornerRadius(8)
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
-                
+                .disabled(!viewModel.isFormValid) // Disable if fields are empty
+
                 Spacer()
-                
-                // Hidden NavigationLink to SignInView
+
+                // NavigationLink to SignInView
                 NavigationLink(destination: SignInView(), isActive: $navigateToSignIn) {
                     EmptyView()
                 }
             }
             .navigationBarHidden(true)
+
+            // Alert for Both Success & Error
+            .alert(isPresented: $viewModel.isRegistered) {
+                if viewModel.isRegistered {
+                    return Alert(
+                        title: Text("Success"),
+                        message: Text("Account created successfully!"),
+                        dismissButton: .default(Text("OK")) {
+                            navigateToSignIn = true
+                        }
+                    )
+                } else {
+                    return Alert(
+                        title: Text("Error"),
+                        message: Text("There was an error creating your account. Please try again."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
+            }
         }
     }
 }
