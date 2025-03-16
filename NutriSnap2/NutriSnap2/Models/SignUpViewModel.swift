@@ -5,28 +5,39 @@
 //  Created by Oscar Piedrasanta Diaz on 2025-03-01.
 //
 
-
 import SwiftUI
 import Combine
 
+import SwiftUI
+
 class SignUpViewModel: ObservableObject {
-    // MARK: - Published Properties for User Input
     @Published var firstName: String = ""
     @Published var lastName: String = ""
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var confirmPassword: String = ""
-    @Published var dailyCalorieGoal: String = ""
-    
-    
-    // MARK: - Sign Up Action
+    @Published var dailyCalorieGoal: String = "2000"
+    @Published var isRegistered = false
+
     func signUp() {
-        print("Signing up with:")
-        print("First Name: \(firstName)")
-        print("Last Name: \(lastName)")
-        print("Email: \(email)")
-        print("Password: \(password)")
-        print("Confirm Password: \(confirmPassword)")
-        print("Daily Calorie Goal: \(dailyCalorieGoal)")
+        guard password == confirmPassword else {
+            print("❌ Passwords do not match")
+            return
+        }
+
+        let user = UserModel(
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password,
+            calorieGoal: Int(dailyCalorieGoal)
+        )
+
+        MongoDBManager.shared.registerUser(user: user) { success in
+            DispatchQueue.main.async {
+                self.isRegistered = success
+            }
+        }
     }
 }
+
