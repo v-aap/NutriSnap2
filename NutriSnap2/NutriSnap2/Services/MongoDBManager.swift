@@ -13,7 +13,7 @@ class MongoDBManager {
         do {
             let elg = MultiThreadedEventLoopGroup(numberOfThreads: 4)  // Handle async queries
             self.client = try MongoClient(
-                "mongodb+srv://admin:<db_password>@nutrisnapdb.0yc8f.mongodb.net/?retryWrites=true&w=majority&appName=NutriSnapDB",
+                "mongodb+srv://admin:ValOscar2025@nutrisnapdb.0yc8f.mongodb.net/?retryWrites=true&w=majority&appName=NutriSnapDB",
                 using: elg
             )
             self.database = client?.db("NutriSnapDB")
