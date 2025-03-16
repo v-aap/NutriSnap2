@@ -1,11 +1,11 @@
 import SwiftUI
-import RealmSwift
 
 struct MealDetailView: View {
     var meal: MealEntry
     @State private var navigateToEdit = false
     @State private var showDeleteConfirmation = false
     @Environment(\.presentationMode) var presentationMode
+    var onDelete: ((MealEntry) -> Void)? // ✅ Closure to handle deletion externally
 
     var body: some View {
         VStack {
@@ -75,7 +75,7 @@ struct MealDetailView: View {
 
     // Delete meal and go back to previous screen
     private func deleteMeal() {
-        RealmManager.shared.deleteMeal(meal: meal)
+        onDelete?(meal) // ✅ Calls external deletion function
         presentationMode.wrappedValue.dismiss()
     }
 }
