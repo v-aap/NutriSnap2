@@ -95,7 +95,7 @@
 		C213222E2D8754B70039FFC0 /* MongoDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MongoDBManager.swift; sourceTree = "<group>"; };
 		C213222F2D8754B70039FFC0 /* SecurityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		C21322332D8754F00039FFC0 /* PieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
-		C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RealmDBManager.swift; path = NutriSnap2/Services/RealmDBManager.swift; sourceTree = "<group>"; };
+		C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmDBManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,7 +128,6 @@
 		18C2F8592D84AF0D0066CA1E = {
 			isa = PBXGroup;
 			children = (
-				C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */,
 				18C2F8642D84AF0D0066CA1E /* NutriSnap2 */,
 				18C2F8752D84AF0F0066CA1E /* NutriSnap2Tests */,
 				18C2F87F2D84AF0F0066CA1E /* NutriSnap2UITests */,
@@ -224,6 +223,7 @@
 		C21322302D8754B70039FFC0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */,
 				C213222F2D8754B70039FFC0 /* SecurityManager.swift */,
 				C213222E2D8754B70039FFC0 /* MongoDBManager.swift */,
 			);
