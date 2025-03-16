@@ -14,8 +14,8 @@
             filePath = "NutriSnap2/Services/MongoDBManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "34"
-            endingLineNumber = "34"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
             landmarkName = "registerUser(user:)"
             landmarkType = "7">
          </BreakpointContent>

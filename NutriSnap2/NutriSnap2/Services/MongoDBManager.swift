@@ -1,6 +1,4 @@
 import Foundation
-import MongoSwift
-import NIO
 
 class MongoDBManager {
     static let shared = MongoDBManager()
