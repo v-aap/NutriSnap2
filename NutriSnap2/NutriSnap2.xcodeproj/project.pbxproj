@@ -34,6 +34,8 @@
 		18C2F8BF2D84AF470066CA1E /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2F8A82D84AF470066CA1E /* SignUpView.swift */; };
 		18C2F8C22D84BD510066CA1E /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2F8C12D84BD510066CA1E /* SplashScreenView.swift */; };
 		18C2F8C42D84BE640066CA1E /* RootContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2F8C32D84BE640066CA1E /* RootContainerView.swift */; };
+		C211B5F92D876B8F00A0945E /* MongoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C211B5F82D876B8F00A0945E /* MongoSwift */; };
+		C211B5FB2D876B8F00A0945E /* MongoSwiftSync in Frameworks */ = {isa = PBXBuildFile; productRef = C211B5FA2D876B8F00A0945E /* MongoSwiftSync */; };
 		C21322242D8752480039FFC0 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322232D8752480039FFC0 /* UserModel.swift */; };
 		C21322312D8754B70039FFC0 /* MongoDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C213222E2D8754B70039FFC0 /* MongoDBManager.swift */; };
 		C21322322D8754B70039FFC0 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C213222F2D8754B70039FFC0 /* SecurityManager.swift */; };
@@ -99,6 +101,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C211B5FB2D876B8F00A0945E /* MongoSwiftSync in Frameworks */,
+				C211B5F92D876B8F00A0945E /* MongoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +243,10 @@
 			dependencies = (
 			);
 			name = NutriSnap2;
+			packageProductDependencies = (
+				C211B5F82D876B8F00A0945E /* MongoSwift */,
+				C211B5FA2D876B8F00A0945E /* MongoSwiftSync */,
+			);
 			productName = NutriSnap2;
 			productReference = 18C2F8622D84AF0D0066CA1E /* NutriSnap2.app */;
 			productType = "com.apple.product-type.application";
@@ -311,6 +319,9 @@
 				Base,
 			);
 			mainGroup = 18C2F8592D84AF0D0066CA1E;
+			packageReferences = (
+				C211B5F72D876B8F00A0945E /* XCRemoteSwiftPackageReference "mongo-swift-driver" */,
+			);
 			productRefGroup = 18C2F8632D84AF0D0066CA1E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -703,6 +714,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C211B5F72D876B8F00A0945E /* XCRemoteSwiftPackageReference "mongo-swift-driver" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mongodb/mongo-swift-driver";
+			requirement = {
+				kind = exactVersion;
+				version = 1.3.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C211B5F82D876B8F00A0945E /* MongoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C211B5F72D876B8F00A0945E /* XCRemoteSwiftPackageReference "mongo-swift-driver" */;
+			productName = MongoSwift;
+		};
+		C211B5FA2D876B8F00A0945E /* MongoSwiftSync */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C211B5F72D876B8F00A0945E /* XCRemoteSwiftPackageReference "mongo-swift-driver" */;
+			productName = MongoSwiftSync;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 18C2F85A2D84AF0D0066CA1E /* Project object */;
 }
