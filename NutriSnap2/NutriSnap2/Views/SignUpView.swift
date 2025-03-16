@@ -34,10 +34,14 @@ struct SignUpView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
 
-                TextField("Daily Calorie Goal (Optional)", text: $viewModel.dailyCalorieGoal)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
+                TextField("Daily Calorie Goal (Optional)", text: Binding(
+                    get: { viewModel.dailyCalorieGoal.map { String($0) } ?? "" }, 
+                    set: { viewModel.dailyCalorieGoal = Int($0) } 
+                ))
+                .keyboardType(.numberPad)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+
 
                 // Disable button if form is invalid
                 Button(action: {
