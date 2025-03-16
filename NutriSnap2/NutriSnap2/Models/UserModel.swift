@@ -1,20 +1,18 @@
 import Foundation
+import RealmSwift
 
-struct UserModel: Codable, Identifiable {
-    var id: String
-    var firstName: String
-    var lastName: String
-    var email: String
-    var passwordHash: String
-    var calorieGoal: Int?
+class UserModel: Object, ObjectKeyIdentifiable {
+    @Persisted(primaryKey: true) var id: ObjectId = ObjectId.generate()
+    @Persisted var firstName: String
+    @Persisted var lastName: String
+    @Persisted var email: String
+    @Persisted var dailyCalorieGoal: Int?
 
-    // MARK: - Initializer
-    init(id: String = UUID().uuidString, firstName: String, lastName: String, email: String, password: String, calorieGoal: Int? = nil) {
-        self.id = id
+    convenience init(firstName: String, lastName: String, email: String, dailyCalorieGoal: Int?) {
+        self.init()
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
-        self.passwordHash = SecurityManager.shared.hashPassword(password)
-        self.calorieGoal = calorieGoal ?? 2000
+        self.dailyCalorieGoal = dailyCalorieGoal
     }
 }

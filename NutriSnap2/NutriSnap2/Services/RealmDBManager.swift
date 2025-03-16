@@ -7,7 +7,7 @@ class RealmDBManager {
     private var user: User?
 
     private init() {
-        self.app = App(id: "your-realm-app-id") // 🔹 Replace with your MongoDB Realm App ID
+        self.app = App(id: "nutrisnap-uaftlyk") 
         self.user = app.currentUser
     }
 
@@ -15,12 +15,12 @@ class RealmDBManager {
     func registerUser(firstName: String, lastName: String, email: String, password: String, calorieGoal: Int?) async -> Bool {
         do {
             try await app.emailPasswordAuth.registerUser(email: email, password: password)
-            print("✅ User registration successful!")
+            print("User registration successful!")
 
             // Auto login after registration
             return await loginUser(email: email, password: password)
         } catch {
-            print("❌ Registration failed: \(error.localizedDescription)")
+            print("Registration failed: \(error.localizedDescription)")
             return false
         }
     }
@@ -31,10 +31,10 @@ class RealmDBManager {
             let credentials = Credentials.emailPassword(email: email, password: password)
             let user = try await app.login(credentials: credentials)
             self.user = user
-            print("✅ Login successful for user: \(user.id)")
+            print("Login successful for user: \(user.id)")
             return true
         } catch {
-            print("❌ Login failed: \(error.localizedDescription)")
+            print("Login failed: \(error.localizedDescription)")
             return false
         }
     }
@@ -49,16 +49,16 @@ class RealmDBManager {
         guard let user = app.currentUser else { return }
         do {
             try await user.logOut()
-            print("✅ User logged out successfully")
+            print("User logged out successfully")
         } catch {
-            print("❌ Logout failed: \(error.localizedDescription)")
+            print("Logout failed: \(error.localizedDescription)")
         }
     }
 
     // MARK: - Fetch User Profile Data
     func fetchUserProfile() async -> UserModel? {
         guard let user = app.currentUser else {
-            print("❌ No user logged in")
+            print("No user logged in")
             return nil
         }
         
@@ -76,6 +76,6 @@ class RealmDBManager {
         try! realm.write {
             realm.add(userModel, update: .modified)
         }
-        print("✅ User data synced successfully")
+        print("User data synced successfully")
     }
 }
