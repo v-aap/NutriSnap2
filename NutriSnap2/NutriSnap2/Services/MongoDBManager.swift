@@ -1,86 +1,104 @@
 import Foundation
+import MongoSwift
+import NIO
 
 class MongoDBManager {
     static let shared = MongoDBManager()
+    
+    private var client: MongoClient?
+    private var database: MongoDatabase?
+    private var usersCollection: MongoCollection<BSONDocument>?
 
-    private let baseURL = "https://data.mongodb-api.com/app/67d07e18cbf53618b5f6f80b/endpoint/data/v1/action"
-    private let apiKey = "58dc8397-3be1-49d3-8b2c-40bfa2434637"
-    private let databaseName = "NutriSnapDB"
-    private let usersCollection = "users"
+    init() {
+        do {
+            let elg = MultiThreadedEventLoopGroup(numberOfThreads: 4)  // Handle async queries
+            self.client = try MongoClient(
+                "mongodb+srv://admin:<db_password>@nutrisnapdb.0yc8f.mongodb.net/?retryWrites=true&w=majority&appName=NutriSnapDB",
+                using: elg
+            )
+            self.database = client?.db("NutriSnapDB")
+            self.usersCollection = database?.collection("users")
+            print("✅ Connected to MongoDB successfully")
+        } catch {
+            print("❌ MongoDB Connection Error: \(error)")
+        }
+    }
+
+    deinit {
+        try? client?.syncClose()
+    }
 
     // MARK: - Register User
-    func registerUser(user: UserModel, completion: @escaping (Bool) -> Void) {
-        let url = URL(string: "\(baseURL)/insertOne")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(apiKey, forHTTPHeaderField: "apiKey")
+    func registerUser(user: UserModel) async -> Bool {
+        guard let usersCollection = usersCollection else {
+            print("❌ Error: Users collection is nil")
+            return false
+        }
 
-        let userData: [String: Any] = [
-            "dataSource": "Cluster0",
-            "database": databaseName,
-            "collection": usersCollection,
-            "document": [
-                "firstName": user.firstName,
-                "lastName": user.lastName,
-                "email": user.email,
-                "passwordHash": user.passwordHash, 
-                "calorieGoal": user.calorieGoal ?? 2000
-            ]
+        let userDocument: BSONDocument = [
+            "firstName": .string(user.firstName),
+            "lastName": .string(user.lastName),
+            "email": .string(user.email),
+            "passwordHash": .string(user.passwordHash),
+            "calorieGoal": .int32(Int32(user.calorieGoal ?? 2000))
         ]
 
-        request.httpBody = try? JSONSerialization.data(withJSONObject: userData)
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            completion(error == nil)
-        }.resume()
+        do {
+            let result = try await usersCollection.insertOne(userDocument)
+            return result != nil  // Insert success if result is not nil
+        } catch {
+            print("❌ Error inserting user: \(error)")
+            return false
+        }
     }
 
     // MARK: - User Login
-    func loginUser(email: String, password: String, completion: @escaping (UserModel?) -> Void) {
-        let url = URL(string: "\(baseURL)/findOne")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(apiKey, forHTTPHeaderField: "apiKey")
+    func loginUser(email: String, password: String) async -> UserModel? {
+        guard let usersCollection = usersCollection else {
+            print("❌ Error: Users collection is nil")
+            return nil
+        }
 
         let hashedPassword = SecurityManager.shared.hashPassword(password)
-
-        let query: [String: Any] = [
-            "dataSource": "Cluster0",
-            "database": databaseName,
-            "collection": usersCollection,
-            "filter": ["email": email, "passwordHash": hashedPassword] 
+        let query: BSONDocument = [
+            "email": .string(email),
+            "passwordHash": .string(hashedPassword)
         ]
 
-        request.httpBody = try? JSONSerialization.data(withJSONObject: query)
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                completion(nil)
-                return
+        do {
+            if let document = try await usersCollection.findOne(query) {
+                return UserModel(
+                    id: document["_id"]?.objectIDValue?.hex ?? UUID().uuidString,
+                    firstName: document["firstName"]?.stringValue ?? "",
+                    lastName: document["lastName"]?.stringValue ?? "",
+                    email: document["email"]?.stringValue ?? "",
+                    password: "",  // Passwords are not stored locally
+                    calorieGoal: document["calorieGoal"]?.int32Value.map { Int($0) }
+                )
+            } else {
+                print("❌ No user found with that email/password")
+                return nil
             }
+        } catch {
+            print("❌ Error finding user: \(error)")
+            return nil
+        }
+    }
 
-            do {
-                if let jsonResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                   let document = jsonResponse["document"] as? [String: Any] {
-                    
-                    let user = UserModel(
-                        id: document["_id"] as? String ?? UUID().uuidString,
-                        firstName: document["firstName"] as? String ?? "",
-                        lastName: document["lastName"] as? String ?? "",
-                        email: document["email"] as? String ?? "",
-                        password: "", // Password is not stored locally
-                        calorieGoal: document["calorieGoal"] as? Int
-                    )
-                    
-                    completion(user)
-                } else {
-                    completion(nil)
-                }
-            } catch {
-                completion(nil)
+    // MARK: - List All Users (For Debugging)
+    func listAllUsers() async {
+        guard let usersCollection = usersCollection else {
+            print("❌ Error: Users collection is nil")
+            return
+        }
+
+        do {
+            let cursor = try await usersCollection.find()
+            for try await user in cursor {
+                print("👤 User: \(user)")
             }
-        }.resume()
+        } catch {
+            print("❌ Error retrieving users: \(error)")
+        }
     }
 }
