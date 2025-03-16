@@ -38,6 +38,8 @@
 		C21322312D8754B70039FFC0 /* MongoDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C213222E2D8754B70039FFC0 /* MongoDBManager.swift */; };
 		C21322322D8754B70039FFC0 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C213222F2D8754B70039FFC0 /* SecurityManager.swift */; };
 		C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322332D8754F00039FFC0 /* PieChartView.swift */; };
+		C2F9CD612D8775E100161BA0 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = C2F9CD602D8775E100161BA0 /* Realm */; };
+		C2F9CD632D8775E100161BA0 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C2F9CD622D8775E100161BA0 /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +101,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2F9CD632D8775E100161BA0 /* RealmSwift in Frameworks */,
+				C2F9CD612D8775E100161BA0 /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +244,8 @@
 			);
 			name = NutriSnap2;
 			packageProductDependencies = (
+				C2F9CD602D8775E100161BA0 /* Realm */,
+				C2F9CD622D8775E100161BA0 /* RealmSwift */,
 			);
 			productName = NutriSnap2;
 			productReference = 18C2F8622D84AF0D0066CA1E /* NutriSnap2.app */;
@@ -314,6 +320,7 @@
 			);
 			mainGroup = 18C2F8592D84AF0D0066CA1E;
 			packageReferences = (
+				C2F9CD5F2D8775E100161BA0 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 18C2F8632D84AF0D0066CA1E /* Products */;
 			projectDirPath = "";
@@ -707,6 +714,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C2F9CD5F2D8775E100161BA0 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C2F9CD602D8775E100161BA0 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C2F9CD5F2D8775E100161BA0 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		C2F9CD622D8775E100161BA0 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C2F9CD5F2D8775E100161BA0 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 18C2F85A2D84AF0D0066CA1E /* Project object */;
 }
