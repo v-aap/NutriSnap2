@@ -11,8 +11,8 @@ class SignInViewModel: ObservableObject {
             DispatchQueue.main.async {
                 if let user = user {
                     self.currentUser = user
-                    self.isAuthenticated = true
-                    self.saveUserSession(user: user) // Store user locally
+                    self.isAuthenticated = true // Trigger navigation
+                    self.saveUserSession(user: user)
                 } else {
                     self.isAuthenticated = false
                 }
@@ -33,7 +33,7 @@ class SignInViewModel: ObservableObject {
         if let savedUser = UserDefaults.standard.data(forKey: "loggedInUser"),
            let decodedUser = try? JSONDecoder().decode(UserModel.self, from: savedUser) {
             self.currentUser = decodedUser
-            self.isAuthenticated = true
+            self.isAuthenticated = true // Keeps user logged in
         }
     }
 
