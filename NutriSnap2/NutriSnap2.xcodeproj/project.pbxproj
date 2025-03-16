@@ -40,6 +40,7 @@
 		C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322332D8754F00039FFC0 /* PieChartView.swift */; };
 		C2F9CD612D8775E100161BA0 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = C2F9CD602D8775E100161BA0 /* Realm */; };
 		C2F9CD632D8775E100161BA0 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C2F9CD622D8775E100161BA0 /* RealmSwift */; };
+		C2F9CD672D877CCB00161BA0 /* RealmDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +95,7 @@
 		C213222E2D8754B70039FFC0 /* MongoDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MongoDBManager.swift; sourceTree = "<group>"; };
 		C213222F2D8754B70039FFC0 /* SecurityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		C21322332D8754F00039FFC0 /* PieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
+		C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RealmDBManager.swift; path = NutriSnap2/Services/RealmDBManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 		18C2F8592D84AF0D0066CA1E = {
 			isa = PBXGroup;
 			children = (
+				C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */,
 				18C2F8642D84AF0D0066CA1E /* NutriSnap2 */,
 				18C2F8752D84AF0F0066CA1E /* NutriSnap2Tests */,
 				18C2F87F2D84AF0F0066CA1E /* NutriSnap2UITests */,
@@ -367,6 +370,7 @@
 				C21322242D8752480039FFC0 /* UserModel.swift in Sources */,
 				18C2F8B62D84AF470066CA1E /* ImagePicker.swift in Sources */,
 				C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */,
+				C2F9CD672D877CCB00161BA0 /* RealmDBManager.swift in Sources */,
 				18C2F8BB2D84AF470066CA1E /* FilterButton.swift in Sources */,
 				18C2F8C42D84BE640066CA1E /* RootContainerView.swift in Sources */,
 				18C2F8B22D84AF470066CA1E /* MealEntryView.swift in Sources */,
