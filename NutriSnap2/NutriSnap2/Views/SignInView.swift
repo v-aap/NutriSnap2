@@ -22,9 +22,11 @@ struct SignInView: View {
                     .padding(.horizontal)
 
                 Button(action: {
-                    viewModel.signIn()
-                    if !viewModel.isAuthenticated {
-                        showErrorAlert = true // Show error if login fails
+                    Task {
+                        await viewModel.signIn()
+                        if !viewModel.isAuthenticated {
+                            showErrorAlert = true
+                        }
                     }
                 }) {
                     Text("Sign In")
@@ -39,7 +41,6 @@ struct SignInView: View {
 
                 Spacer()
 
-                // Show error alert if login fails
                 .alert(isPresented: $showErrorAlert) {
                     Alert(
                         title: Text("Login Failed"),
@@ -50,14 +51,9 @@ struct SignInView: View {
             }
             .navigationBarHidden(true)
         }
-        .onAppear {
-            viewModel.loadUserSession() // Load stored user session if available
-        }
-        .fullScreenCover(isPresented: $viewModel.isAuthenticated) { // Navigates when authenticated
-            RootContainerView()
-        }
     }
 }
+
 
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
