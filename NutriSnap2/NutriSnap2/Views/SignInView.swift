@@ -1,16 +1,9 @@
-//
-//  SignInView.swift
-//  NutriSnap
-//
-//  Created by Valeria Arce on 2025-03-01.
-//
-
 import SwiftUI
 
 struct SignInView: View {
     @StateObject private var viewModel = SignInViewModel()
-    @State private var navigateToRoot = false
-    
+    @State private var showErrorAlert = false
+
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -18,31 +11,21 @@ struct SignInView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 40)
-                
+
                 TextField("Email", text: $viewModel.email)
                     .keyboardType(.emailAddress)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
+
                 SecureField("Password", text: $viewModel.password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        viewModel.forgotPassword()
-                    }) {
-                        Text("Forgot Password?")
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                    }
-                    .padding(.trailing)
-                }
-                
+
                 Button(action: {
                     viewModel.signIn()
-                    navigateToRoot = true
+                    if !viewModel.isAuthenticated {
+                        showErrorAlert = true // Show error if login fails
+                    }
                 }) {
                     Text("Sign In")
                         .foregroundColor(.white)
@@ -53,23 +36,25 @@ struct SignInView: View {
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
-                
-                HStack {
-                    Text("Don't have an account?")
-                    NavigationLink(destination: SignUpView()) {
-                        Text("Sign Up")
-                            .foregroundColor(.blue)
-                            .fontWeight(.bold)
-                    }
-                }
-                .padding(.top, 10)
-                
+
                 Spacer()
+
+                // Show error alert if login fails
+                .alert(isPresented: $showErrorAlert) {
+                    Alert(
+                        title: Text("Login Failed"),
+                        message: Text("Invalid email or password. Please try again."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
             }
             .navigationBarHidden(true)
         }
-        .fullScreenCover(isPresented: $navigateToRoot) {
-            RootContainerView()
+        .onAppear {
+            viewModel.loadUserSession() // Load stored user session if available
+        }
+        .fullScreenCover(isPresented: $viewModel.isAuthenticated) { // Navigates when authenticated
+            DashboardView()
         }
     }
 }
