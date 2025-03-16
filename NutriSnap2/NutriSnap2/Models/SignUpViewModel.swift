@@ -1,13 +1,3 @@
-//
-//  SignUpViewModel.swift
-//  NutriSnap
-//
-//  Created by Oscar Piedrasanta Diaz on 2025-03-01.
-//
-
-import SwiftUI
-import Combine
-
 import SwiftUI
 
 class SignUpViewModel: ObservableObject {
@@ -17,11 +7,23 @@ class SignUpViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var confirmPassword: String = ""
     @Published var dailyCalorieGoal: String = "2000"
-    @Published var isRegistered = false
+    
+    @Published var isRegistered = false 
 
+    // MARK: - Validate Required Fields
+    var isFormValid: Bool {
+        return !firstName.isEmpty &&
+               !lastName.isEmpty &&
+               !email.isEmpty &&
+               !password.isEmpty &&
+               !confirmPassword.isEmpty &&
+               password == confirmPassword
+    }
+
+    // MARK: - Sign Up Function
     func signUp() {
-        guard password == confirmPassword else {
-            print("❌ Passwords do not match")
+        guard isFormValid else {
+            isRegistered = false 
             return
         }
 
@@ -35,9 +37,8 @@ class SignUpViewModel: ObservableObject {
 
         MongoDBManager.shared.registerUser(user: user) { success in
             DispatchQueue.main.async {
-                self.isRegistered = success
+                self.isRegistered = success 
             }
         }
     }
 }
-
