@@ -35,7 +35,7 @@ class SignUpViewModel: ObservableObject {
             calorieGoal: Int(dailyCalorieGoal)
         )
 
-        MongoDBManager.shared.registerUser(user: user) { success in
+            let success = await MongoDBManager.shared.registerUser(user: user)
             DispatchQueue.main.async {
                 self.isRegistered = success 
             }
