@@ -1,16 +1,18 @@
 import SwiftUI
-import Combine
 
 class SignInViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
-    
-    func forgotPassword() {
-        print("Forgot password for \(email)")
-    }
-    
+    @Published var isAuthenticated = false
+
     func signIn() {
-        // Placeholder: perform sign in logic.
-        print("Signing in with email: \(email)")
+        MongoDBManager.shared.loginUser(email: email, password: password) { success in
+            DispatchQueue.main.async {
+                self.isAuthenticated = success
+            }
+        }
     }
+
+// add function for forgot password
+    
 }
