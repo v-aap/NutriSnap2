@@ -54,7 +54,7 @@ struct SignInView: View {
             viewModel.loadUserSession() // Load stored user session if available
         }
         .fullScreenCover(isPresented: $viewModel.isAuthenticated) { // Navigates when authenticated
-            DashboardView()
+            RootContainerView()
         }
     }
 }
