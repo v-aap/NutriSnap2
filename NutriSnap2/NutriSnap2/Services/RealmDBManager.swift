@@ -7,7 +7,7 @@ class RealmDBManager {
     private var user: User?
 
     private init() {
-        self.app = App(id: "your-realm-app-id") // 🔹 Replace with your MongoDB Realm App ID
+        self.app = App(id: "nutrisnap-uaftlyk") 
         self.user = app.currentUser
     }
 
