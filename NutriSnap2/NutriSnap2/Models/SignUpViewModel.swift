@@ -20,20 +20,21 @@ class SignUpViewModel: ObservableObject {
                password == confirmPassword
     }
 
-    // MARK: - Sign Up Function
+    // MARK: - Sign Up Function (Async)
     func signUp() {
         guard isFormValid else {
             isRegistered = false 
             return
         }
 
-        let user = UserModel(
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password,
-            calorieGoal: Int(dailyCalorieGoal)
-        )
+        Task {
+            let user = UserModel(
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password,
+                calorieGoal: Int(dailyCalorieGoal)
+            )
 
             let success = await MongoDBManager.shared.registerUser(user: user)
             DispatchQueue.main.async {
