@@ -7,7 +7,7 @@ class RealmDBManager {
     private var user: User?
 
     private init() {
-        self.app = App(id: "nutrisnap-uaftlyk") 
+        self.app = App(id: "nutrisnap-uaftlyk")
         self.user = app.currentUser
     }
 

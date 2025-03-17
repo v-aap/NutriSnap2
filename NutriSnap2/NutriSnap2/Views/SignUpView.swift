@@ -34,14 +34,19 @@ struct SignUpView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
 
-                TextField("Daily Calorie Goal (Optional)", text: $viewModel.dailyCalorieGoal)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
+                TextField("Daily Calorie Goal (Optional)", text: Binding(
+                    get: { viewModel.dailyCalorieGoal.map { String($0) } ?? "" },
+                    set: { viewModel.dailyCalorieGoal = Int($0) }
+                ))
+                .keyboardType(.numberPad)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
 
                 // Disable button if form is invalid
                 Button(action: {
-                    viewModel.signUp()
+                    Task {
+                        await viewModel.signUp()
+                    }
                 }) {
                     Text("Sign Up")
                         .foregroundColor(.white)
@@ -64,22 +69,19 @@ struct SignUpView: View {
             .navigationBarHidden(true)
 
             // Alert for Both Success & Error
-            .alert(isPresented: $viewModel.isRegistered) {
-                if viewModel.isRegistered {
-                    return Alert(
-                        title: Text("Success"),
-                        message: Text("Account created successfully!"),
-                        dismissButton: .default(Text("OK")) {
+            .alert(isPresented: Binding<Bool>(
+                get: { viewModel.isRegistered },
+                set: { newValue in viewModel.isRegistered = newValue }
+            )) {
+                Alert(
+                    title: Text(viewModel.isRegistered ? "Success" : "Error"),
+                    message: Text(viewModel.isRegistered ? "Account created successfully!" : "There was an error creating your account. Please try again."),
+                    dismissButton: .default(Text("OK")) {
+                        if viewModel.isRegistered {
                             navigateToSignIn = true
                         }
-                    )
-                } else {
-                    return Alert(
-                        title: Text("Error"),
-                        message: Text("There was an error creating your account. Please try again."),
-                        dismissButton: .default(Text("OK"))
-                    )
-                }
+                    }
+                )
             }
         }
     }
