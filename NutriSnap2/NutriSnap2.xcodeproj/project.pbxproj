@@ -35,12 +35,10 @@
 		18C2F8C22D84BD510066CA1E /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2F8C12D84BD510066CA1E /* SplashScreenView.swift */; };
 		18C2F8C42D84BE640066CA1E /* RootContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2F8C32D84BE640066CA1E /* RootContainerView.swift */; };
 		C21322242D8752480039FFC0 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322232D8752480039FFC0 /* UserModel.swift */; };
-		C21322312D8754B70039FFC0 /* MongoDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C213222E2D8754B70039FFC0 /* MongoDBManager.swift */; };
 		C21322322D8754B70039FFC0 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C213222F2D8754B70039FFC0 /* SecurityManager.swift */; };
 		C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322332D8754F00039FFC0 /* PieChartView.swift */; };
-		C2F9CD612D8775E100161BA0 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = C2F9CD602D8775E100161BA0 /* Realm */; };
-		C2F9CD632D8775E100161BA0 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C2F9CD622D8775E100161BA0 /* RealmSwift */; };
-		C2F9CD672D877CCB00161BA0 /* RealmDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */; };
+		C6A73D592D88BF160059AAD6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C6A73D582D88BF160059AAD6 /* RealmSwift */; };
+		C6A73D5B2D88C27B0059AAD6 /* RealmDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,10 +90,9 @@
 		18C2F8C12D84BD510066CA1E /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		18C2F8C32D84BE640066CA1E /* RootContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootContainerView.swift; sourceTree = "<group>"; };
 		C21322232D8752480039FFC0 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
-		C213222E2D8754B70039FFC0 /* MongoDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MongoDBManager.swift; sourceTree = "<group>"; };
 		C213222F2D8754B70039FFC0 /* SecurityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		C21322332D8754F00039FFC0 /* PieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
-		C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmDBManager.swift; sourceTree = "<group>"; };
+		C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmDBManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,8 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2F9CD632D8775E100161BA0 /* RealmSwift in Frameworks */,
-				C2F9CD612D8775E100161BA0 /* Realm in Frameworks */,
+				C6A73D592D88BF160059AAD6 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,7 +221,7 @@
 			children = (
 				C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */,
 				C213222F2D8754B70039FFC0 /* SecurityManager.swift */,
-				C213222E2D8754B70039FFC0 /* MongoDBManager.swift */,
+				C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -247,8 +243,7 @@
 			);
 			name = NutriSnap2;
 			packageProductDependencies = (
-				C2F9CD602D8775E100161BA0 /* Realm */,
-				C2F9CD622D8775E100161BA0 /* RealmSwift */,
+				C6A73D582D88BF160059AAD6 /* RealmSwift */,
 			);
 			productName = NutriSnap2;
 			productReference = 18C2F8622D84AF0D0066CA1E /* NutriSnap2.app */;
@@ -323,7 +318,7 @@
 			);
 			mainGroup = 18C2F8592D84AF0D0066CA1E;
 			packageReferences = (
-				C2F9CD5F2D8775E100161BA0 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				C6A73D572D88BF160059AAD6 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 18C2F8632D84AF0D0066CA1E /* Products */;
 			projectDirPath = "";
@@ -386,8 +381,8 @@
 				18C2F8AE2D84AF470066CA1E /* SignInViewModel.swift in Sources */,
 				18C2F8AD2D84AF470066CA1E /* MealEntryModel.swift in Sources */,
 				18C2F8AC2D84AF470066CA1E /* SignUpViewModel.swift in Sources */,
-				C21322312D8754B70039FFC0 /* MongoDBManager.swift in Sources */,
 				18C2F8C22D84BD510066CA1E /* SplashScreenView.swift in Sources */,
+				C6A73D5B2D88C27B0059AAD6 /* RealmDBManager.swift in Sources */,
 				18C2F8BF2D84AF470066CA1E /* SignUpView.swift in Sources */,
 				18C2F8B72D84AF470066CA1E /* EditPersonalInfoView.swift in Sources */,
 				18C2F8B82D84AF470066CA1E /* LogView.swift in Sources */,
@@ -720,25 +715,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C2F9CD5F2D8775E100161BA0 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+		C6A73D572D88BF160059AAD6 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift";
+			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.42.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C2F9CD602D8775E100161BA0 /* Realm */ = {
+		C6A73D582D88BF160059AAD6 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C2F9CD5F2D8775E100161BA0 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
-		C2F9CD622D8775E100161BA0 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C2F9CD5F2D8775E100161BA0 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			package = C6A73D572D88BF160059AAD6 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */

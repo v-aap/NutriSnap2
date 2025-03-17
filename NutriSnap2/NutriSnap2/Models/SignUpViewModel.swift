@@ -7,31 +7,42 @@ class SignUpViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
     @Published var confirmPassword = ""
-    @Published var dailyCalorieGoal: Int? = nil 
+    @Published var dailyCalorieGoal: Int? = nil
 
-    @Published var isRegistered = false 
+    @Published var isRegistered = false
+
+    var isFormValid: Bool {
+        !firstName.isEmpty &&
+        !lastName.isEmpty &&
+        !email.isEmpty &&
+        !password.isEmpty &&
+        password == confirmPassword
+    }
 
     // MARK: - Sign Up Function
     func signUp() async {
         guard password == confirmPassword else {
-            print("❌ Passwords do not match")
+            print("Passwords do not match")
             return
         }
 
-        let app = App(id: "nutrisnap-uaftlyk") 
-        
+        let app = App(id: "nutrisnap-uaftlyk")
+
         do {
             try await app.emailPasswordAuth.registerUser(email: email, password: password)
             print("Registration successful!")
-            
+
             // Auto-login after registration
             let success = await loginUser()
             
             if success {
                 await saveUserToDatabase()
+                DispatchQueue.main.async {
+                    self.isRegistered = true
+                }
             }
         } catch {
-            print("❌ Registration failed: \(error.localizedDescription)")
+            print("Registration failed: \(error.localizedDescription)")
         }
     }
 
@@ -45,7 +56,7 @@ class SignUpViewModel: ObservableObject {
             print("Login successful for: \(user.id)")
             return true
         } catch {
-            print("❌ Login failed: \(error.localizedDescription)")
+            print("Login failed: \(error.localizedDescription)")
             return false
         }
     }
