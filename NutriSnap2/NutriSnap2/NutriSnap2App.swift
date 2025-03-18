@@ -6,6 +6,11 @@
 //
 
 import SwiftUI
+import FirebaseCore
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(- application: UIApplication, didFinishLaunchingWithOptions launchOtions: [)
+}
 
 @main
 struct NutriSnap2App: App {

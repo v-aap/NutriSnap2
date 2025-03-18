@@ -37,6 +37,9 @@
 		C21322242D8752480039FFC0 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322232D8752480039FFC0 /* UserModel.swift */; };
 		C21322322D8754B70039FFC0 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C213222F2D8754B70039FFC0 /* SecurityManager.swift */; };
 		C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322332D8754F00039FFC0 /* PieChartView.swift */; };
+		C27F8E752D892EA800BDCDE0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C27F8E742D892EA800BDCDE0 /* GoogleService-Info.plist */; };
+		C27F8E782D8932A900BDCDE0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C27F8E772D8932A900BDCDE0 /* FirebaseAnalytics */; };
+		C27F8E7A2D8932A900BDCDE0 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = C27F8E792D8932A900BDCDE0 /* FirebaseAppCheck */; };
 		C6A73D592D88BF160059AAD6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C6A73D582D88BF160059AAD6 /* RealmSwift */; };
 		C6A73D5B2D88C27B0059AAD6 /* RealmDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */; };
 /* End PBXBuildFile section */
@@ -92,6 +95,7 @@
 		C21322232D8752480039FFC0 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		C213222F2D8754B70039FFC0 /* SecurityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		C21322332D8754F00039FFC0 /* PieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
+		C27F8E742D892EA800BDCDE0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmDBManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -100,6 +104,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C27F8E782D8932A900BDCDE0 /* FirebaseAnalytics in Frameworks */,
+				C27F8E7A2D8932A900BDCDE0 /* FirebaseAppCheck in Frameworks */,
 				C6A73D592D88BF160059AAD6 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -144,6 +150,7 @@
 		18C2F8642D84AF0D0066CA1E /* NutriSnap2 */ = {
 			isa = PBXGroup;
 			children = (
+				C27F8E742D892EA800BDCDE0 /* GoogleService-Info.plist */,
 				C21322302D8754B70039FFC0 /* Services */,
 				18C2F8652D84AF0D0066CA1E /* NutriSnap2App.swift */,
 				18C2F8672D84AF0D0066CA1E /* ContentView.swift */,
@@ -219,7 +226,6 @@
 		C21322302D8754B70039FFC0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */,
 				C213222F2D8754B70039FFC0 /* SecurityManager.swift */,
 				C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */,
 			);
@@ -244,6 +250,8 @@
 			name = NutriSnap2;
 			packageProductDependencies = (
 				C6A73D582D88BF160059AAD6 /* RealmSwift */,
+				C27F8E772D8932A900BDCDE0 /* FirebaseAnalytics */,
+				C27F8E792D8932A900BDCDE0 /* FirebaseAppCheck */,
 			);
 			productName = NutriSnap2;
 			productReference = 18C2F8622D84AF0D0066CA1E /* NutriSnap2.app */;
@@ -319,6 +327,7 @@
 			mainGroup = 18C2F8592D84AF0D0066CA1E;
 			packageReferences = (
 				C6A73D572D88BF160059AAD6 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				C27F8E762D8932A900BDCDE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 18C2F8632D84AF0D0066CA1E /* Products */;
 			projectDirPath = "";
@@ -338,6 +347,7 @@
 			files = (
 				18C2F86D2D84AF0F0066CA1E /* Preview Assets.xcassets in Resources */,
 				18C2F86A2D84AF0F0066CA1E /* Assets.xcassets in Resources */,
+				C27F8E752D892EA800BDCDE0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,7 +375,6 @@
 				C21322242D8752480039FFC0 /* UserModel.swift in Sources */,
 				18C2F8B62D84AF470066CA1E /* ImagePicker.swift in Sources */,
 				C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */,
-				C2F9CD672D877CCB00161BA0 /* RealmDBManager.swift in Sources */,
 				18C2F8BB2D84AF470066CA1E /* FilterButton.swift in Sources */,
 				18C2F8C42D84BE640066CA1E /* RootContainerView.swift in Sources */,
 				18C2F8B22D84AF470066CA1E /* MealEntryView.swift in Sources */,
@@ -715,6 +724,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C27F8E762D8932A900BDCDE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.10.0;
+			};
+		};
 		C6A73D572D88BF160059AAD6 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
@@ -726,6 +743,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C27F8E772D8932A900BDCDE0 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C27F8E762D8932A900BDCDE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		C27F8E792D8932A900BDCDE0 /* FirebaseAppCheck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C27F8E762D8932A900BDCDE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAppCheck;
+		};
 		C6A73D582D88BF160059AAD6 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C6A73D572D88BF160059AAD6 /* XCRemoteSwiftPackageReference "realm-swift" */;
