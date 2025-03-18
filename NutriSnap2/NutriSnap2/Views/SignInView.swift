@@ -7,20 +7,22 @@ struct SignInView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
+                
+                // Title
                 Text("Sign In")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 40)
 
-                TextField("Email", text: $viewModel.email)
-                    .keyboardType(.emailAddress)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
+                // Email Input (Using CustomInputFields)
+                InputField(title: "Email", text: $viewModel.email,
+                           errorMessage: viewModel.emailError)
 
-                SecureField("Password", text: $viewModel.password)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
+                // Password Input (Using CustomInputFields)
+                SecureInputField(title: "Password", text: $viewModel.password,
+                                 errorMessage: viewModel.passwordError)
 
+                // Sign In Button
                 Button(action: {
                     Task {
                         await viewModel.signIn()
@@ -33,14 +35,16 @@ struct SignInView: View {
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.green)
+                        .background(viewModel.isFormValid ? Color.green : Color.gray)
                         .cornerRadius(8)
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
+                .disabled(!viewModel.isFormValid)
 
                 Spacer()
 
+                // Error Alert
                 .alert(isPresented: $showErrorAlert) {
                     Alert(
                         title: Text("Login Failed"),
@@ -49,12 +53,19 @@ struct SignInView: View {
                     )
                 }
             }
+            .padding(.horizontal)
+            .onTapGesture { hideKeyboard() }
             .navigationBarHidden(true)
         }
     }
+
+    // Hide Keyboard Function
+    private func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }
 
-
+// MARK: - Preview
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
         SignInView()

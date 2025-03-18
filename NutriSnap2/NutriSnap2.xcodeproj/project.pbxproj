@@ -39,6 +39,7 @@
 		C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322332D8754F00039FFC0 /* PieChartView.swift */; };
 		C6A73D592D88BF160059AAD6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C6A73D582D88BF160059AAD6 /* RealmSwift */; };
 		C6A73D5B2D88C27B0059AAD6 /* RealmDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */; };
+		C6A73D5D2D88ED350059AAD6 /* CustomInputFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A73D5C2D88ED350059AAD6 /* CustomInputFields.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		C213222F2D8754B70039FFC0 /* SecurityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		C21322332D8754F00039FFC0 /* PieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmDBManager.swift; sourceTree = "<group>"; };
+		C6A73D5C2D88ED350059AAD6 /* CustomInputFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputFields.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +214,7 @@
 				18C2F8A82D84AF470066CA1E /* SignUpView.swift */,
 				18C2F8C12D84BD510066CA1E /* SplashScreenView.swift */,
 				18C2F8C32D84BE640066CA1E /* RootContainerView.swift */,
+				C6A73D5C2D88ED350059AAD6 /* CustomInputFields.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -219,7 +222,6 @@
 		C21322302D8754B70039FFC0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				C2F9CD662D877CCB00161BA0 /* RealmDBManager.swift */,
 				C213222F2D8754B70039FFC0 /* SecurityManager.swift */,
 				C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */,
 			);
@@ -365,7 +367,6 @@
 				C21322242D8752480039FFC0 /* UserModel.swift in Sources */,
 				18C2F8B62D84AF470066CA1E /* ImagePicker.swift in Sources */,
 				C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */,
-				C2F9CD672D877CCB00161BA0 /* RealmDBManager.swift in Sources */,
 				18C2F8BB2D84AF470066CA1E /* FilterButton.swift in Sources */,
 				18C2F8C42D84BE640066CA1E /* RootContainerView.swift in Sources */,
 				18C2F8B22D84AF470066CA1E /* MealEntryView.swift in Sources */,
@@ -379,6 +380,7 @@
 				18C2F8AF2D84AF470066CA1E /* NutritionGoalModel.swift in Sources */,
 				18C2F8B52D84AF470066CA1E /* ChangePasswordView.swift in Sources */,
 				18C2F8AE2D84AF470066CA1E /* SignInViewModel.swift in Sources */,
+				C6A73D5D2D88ED350059AAD6 /* CustomInputFields.swift in Sources */,
 				18C2F8AD2D84AF470066CA1E /* MealEntryModel.swift in Sources */,
 				18C2F8AC2D84AF470066CA1E /* SignUpViewModel.swift in Sources */,
 				18C2F8C22D84BD510066CA1E /* SplashScreenView.swift in Sources */,
