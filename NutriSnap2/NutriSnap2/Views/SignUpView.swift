@@ -2,39 +2,56 @@ import SwiftUI
 
 struct SignUpView: View {
     @StateObject private var viewModel = SignUpViewModel()
-    @State private var navigateToSignIn = false
+    @State private var navigateToRootContainer = false
+    @State private var showSuccessAlert = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 Text("Sign Up")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 40)
 
+                // MARK: - First Name Input
                 TextField("First Name *", text: $viewModel.firstName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disableAutocorrection(true)
+                    .autocapitalization(.words)
                     .padding(.horizontal)
 
+                // MARK: - Last Name Input
                 TextField("Last Name *", text: $viewModel.lastName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disableAutocorrection(true)
+                    .autocapitalization(.words)
                     .padding(.horizontal)
 
+                // MARK: - Email Input
                 TextField("name@example.com *", text: $viewModel.email)
                     .keyboardType(.emailAddress)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
                     .padding(.horizontal)
 
+                // MARK: - Password Input
                 SecureField("Password *", text: $viewModel.password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
 
+                // MARK: - Confirm Password Input
                 SecureField("Confirm Password *", text: $viewModel.confirmPassword)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
 
+                // MARK: - Sign Up Button
                 Button(action: {
-                    viewModel.signUp()
+                    viewModel.signUp { success in
+                        if success {
+                            showSuccessAlert = true
+                        }
+                    }
                 }) {
                     Text("Sign Up")
                         .foregroundColor(.white)
@@ -48,10 +65,6 @@ struct SignUpView: View {
                 .disabled(!viewModel.isFormValid)
 
                 Spacer()
-
-                NavigationLink(destination: SignInView(), isActive: $navigateToSignIn) {
-                    EmptyView()
-                }
             }
             .alert(isPresented: Binding<Bool>(
                 get: { viewModel.errorMessage != nil },
@@ -63,10 +76,15 @@ struct SignUpView: View {
                     dismissButton: .default(Text("OK"))
                 )
             }
-            .onChange(of: viewModel.isRegistered) { isRegistered in
-                if isRegistered {
-                    navigateToSignIn = true
+            .alert("Account Created", isPresented: $showSuccessAlert) {
+                Button("OK") {
+                    navigateToRootContainer = true
                 }
+            } message: {
+                Text("Your account has been successfully created. Tap OK to proceed to login.")
+            }
+            .navigationDestination(isPresented: $navigateToRootContainer) {
+                RootContainerView()
             }
             .navigationBarHidden(true)
         }

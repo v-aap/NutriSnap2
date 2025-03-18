@@ -9,25 +9,29 @@ struct RootContainerView: View {
             TabView(selection: $selectedTab) {
                 NavigationView {
                     DashboardView()
-                        .navigationBarHidden(true)
+                        .toolbar(.hidden, for: .navigationBar) // 🔹 Ensures no extra spacing
+                        .ignoresSafeArea(edges: .top) // 🔹 Prevents extra padding on first load
                 }
                 .tag(0)
-                
+
                 NavigationView {
                     LogView()
-                        .navigationBarHidden(true)
+                        .toolbar(.hidden, for: .navigationBar)
+                        .ignoresSafeArea(edges: .top)
                 }
                 .tag(1)
-                
+
                 NavigationView {
                     MealListView()
-                        .navigationBarHidden(true)
+                        .toolbar(.hidden, for: .navigationBar)
+                        .ignoresSafeArea(edges: .top)
                 }
                 .tag(2)
-                
+
                 NavigationView {
                     ProfileView()
-                        .navigationBarHidden(true)
+                        .toolbar(.hidden, for: .navigationBar)
+                        .ignoresSafeArea(edges: .top)
                 }
                 .tag(3)
             }
@@ -50,9 +54,9 @@ struct RootContainerView: View {
                         }
                     }
                     .foregroundColor(selectedTab == 0 ? .blue : .gray)
-                    
+
                     Spacer()
-                    
+
                     // Log
                     Button(action: { selectedTab = 1 }) {
                         VStack {
@@ -61,9 +65,9 @@ struct RootContainerView: View {
                         }
                     }
                     .foregroundColor(selectedTab == 1 ? .blue : .gray)
-                    
+
                     Spacer()
-                    
+
                     // Meals
                     Button(action: { selectedTab = 2 }) {
                         VStack {
@@ -72,9 +76,9 @@ struct RootContainerView: View {
                         }
                     }
                     .foregroundColor(selectedTab == 2 ? .blue : .gray)
-                    
+
                     Spacer()
-                    
+
                     // Profile
                     Button(action: { selectedTab = 3 }) {
                         VStack {

@@ -1,35 +1,18 @@
 import Foundation
 
 struct UserModel: Identifiable, Codable {
-    var id: String  
+    var id: String
     var firstName: String
     var lastName: String
     var email: String
-    var hasSetGoal: Bool
+    var hasSetGoal: Bool = false
 
     // Nutrition Goals
-    var calorieGoal: Int
-    var carbPercentage: Double
-    var proteinPercentage: Double
-    var fatPercentage: Double
-    var selectedPreset: String
-
-    // MARK: - Default Initializer
-    init(id: String, firstName: String, lastName: String, email: String, hasSetGoal: Bool = false,
-         calorieGoal: Int = 2000, carbPercentage: Double = 50.0, proteinPercentage: Double = 25.0, fatPercentage: Double = 25.0,
-         selectedPreset: String = "Balanced (50/25/25)") {
-        
-        self.id = id
-        self.firstName = firstName
-        self.lastName = lastName
-        self.email = email
-        self.hasSetGoal = hasSetGoal
-        self.calorieGoal = calorieGoal
-        self.carbPercentage = carbPercentage
-        self.proteinPercentage = proteinPercentage
-        self.fatPercentage = fatPercentage
-        self.selectedPreset = selectedPreset
-    }
+    var calorieGoal: Int = 2000
+    var carbPercentage: Double = 50.0
+    var proteinPercentage: Double = 25.0
+    var fatPercentage: Double = 25.0
+    var selectedPreset: String = "Balanced (50/25/25)"
 
     // MARK: - Convert Firestore Data to UserModel
     static func fromFirestore(id: String, data: [String: Any]) -> UserModel? {
@@ -40,24 +23,17 @@ struct UserModel: Identifiable, Codable {
             return nil
         }
 
-        let hasSetGoal = data["hasSetGoal"] as? Bool ?? false
-        let calorieGoal = data["calorieGoal"] as? Int ?? 2000
-        let carbPercentage = data["carbPercentage"] as? Double ?? 50.0
-        let proteinPercentage = data["proteinPercentage"] as? Double ?? 25.0
-        let fatPercentage = data["fatPercentage"] as? Double ?? 25.0
-        let selectedPreset = data["selectedPreset"] as? String ?? "Balanced (50/25/25)"
-
         return UserModel(
             id: id,
             firstName: firstName,
             lastName: lastName,
             email: email,
-            hasSetGoal: hasSetGoal,
-            calorieGoal: calorieGoal,
-            carbPercentage: carbPercentage,
-            proteinPercentage: proteinPercentage,
-            fatPercentage: fatPercentage,
-            selectedPreset: selectedPreset
+            hasSetGoal: data["hasSetGoal"] as? Bool ?? false,
+            calorieGoal: data["calorieGoal"] as? Int ?? 2000,
+            carbPercentage: data["carbPercentage"] as? Double ?? 50.0,
+            proteinPercentage: data["proteinPercentage"] as? Double ?? 25.0,
+            fatPercentage: data["fatPercentage"] as? Double ?? 25.0,
+            selectedPreset: data["selectedPreset"] as? String ?? "Balanced (50/25/25)"
         )
     }
 
