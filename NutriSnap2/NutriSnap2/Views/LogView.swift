@@ -1,4 +1,5 @@
 import SwiftUI
+import FirebaseAuth
 
 struct LogView: View {
     @State private var image: UIImage? = nil
