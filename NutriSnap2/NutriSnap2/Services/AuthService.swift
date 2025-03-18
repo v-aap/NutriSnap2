@@ -12,7 +12,7 @@ class AuthService {
     static let shared = AuthService()
     private let db = Firestore.firestore()
 
-    // MARK: - Sign Up Function 
+    // MARK: - Sign Up Function (Stores Basic User Data in Firestore)
     func signUp(email: String, password: String, firstName: String, lastName: String, completion: @escaping (Bool, String?) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
@@ -25,21 +25,22 @@ class AuthService {
                 return
             }
 
-            // Store only identity information at signup
-            let userData: [String: Any] = [
-                "firstName": firstName,
-                "lastName": lastName,
-                "email": email,
-                "hasSetGoal": false  
-            ]
+            // Create UserModel
+            let newUser = UserModel(
+                id: user.uid,
+                firstName: firstName,
+                lastName: lastName,
+                email: email
+            )
 
-            self.db.collection("users").document(user.uid).setData(userData) { error in
+            // Store in Firestore
+            self.db.collection("users").document(user.uid).setData(newUser.toFirestore()) { error in
                 completion(error == nil, error?.localizedDescription)
             }
         }
     }
 
-    // MARK: - Sign In Function 
+    // MARK: - Sign In Function
     func signIn(email: String, password: String, completion: @escaping (Bool, String?) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
             if let error = error {
@@ -50,19 +51,28 @@ class AuthService {
         }
     }
 
-    // MARK: - Check if User Has a Nutrition Goal
-    func checkIfUserHasGoal(completion: @escaping (Bool) -> Void) {
+    // MARK: - Fetch User Data
+    func fetchUserData(completion: @escaping (UserModel?) -> Void) {
         guard let userID = Auth.auth().currentUser?.uid else {
-            completion(false)
+            completion(nil)
             return
         }
 
         db.collection("users").document(userID).getDocument { snapshot, error in
-            if let data = snapshot?.data(), let hasSetGoal = data["hasSetGoal"] as? Bool {
-                completion(hasSetGoal)
-            } else {
-                completion(false)
+            guard let document = snapshot, document.exists, let data = document.data() else {
+                completion(nil)
+                return
             }
+
+            let user = UserModel.fromFirestore(id: userID, data: data)
+            completion(user)
+        }
+    }
+
+    // MARK: - Check if User Has a Nutrition Goal
+    func checkIfUserHasGoal(completion: @escaping (Bool) -> Void) {
+        fetchUserData { user in
+            completion(user?.hasSetGoal ?? false)
         }
     }
 
@@ -79,11 +89,21 @@ class AuthService {
             "proteinPercentage": goal.proteinPercentage,
             "fatPercentage": goal.fatPercentage,
             "selectedPreset": goal.selectedPreset,
-            "hasSetGoal": true  
+            "hasSetGoal": true  // Mark user as having set their goal
         ]
 
         db.collection("users").document(userID).updateData(goalData) { error in
             completion(error == nil)
+        }
+    }
+
+    // MARK: - Sign Out Function
+    func signOut(completion: @escaping (Bool, String?) -> Void) {
+        do {
+            try Auth.auth().signOut()
+            completion(true, nil)
+        } catch let signOutError {
+            completion(false, signOutError.localizedDescription)
         }
     }
 }
