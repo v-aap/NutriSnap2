@@ -6,7 +6,7 @@ class SignInViewModel: ObservableObject {
     @Published var isAuthenticated = false
     @Published var errorMessage: String?
 
-    // MARK: - Sign In Function
+    // MARK: - Sign In Function 
     func signIn(completion: @escaping (Bool) -> Void) {
         AuthService.shared.signIn(email: email, password: password) { success, error in
             DispatchQueue.main.async {
@@ -15,7 +15,7 @@ class SignInViewModel: ObservableObject {
                         completion(userHasGoal)
                     }
                 } else {
-                    self.errorMessage = error
+                    self.errorMessage = error ?? "An unknown error occurred."
                     completion(false)
                 }
             }
