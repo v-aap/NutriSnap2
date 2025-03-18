@@ -9,12 +9,13 @@ import SwiftUI
 import FirebaseCore
 import FirebaseAuth
 
+// MARK: - Firebase Initialization (App Delegate)
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-    return true
-  }
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
 }
 
 @main
@@ -29,19 +30,21 @@ struct NutriSnap2App: App {
                 if showSplash {
                     SplashScreenView()
                         .onAppear {
+                            // Display splash for 2 seconds, then check auth status
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) { 
                                 showSplash = false
                             }
                         }
                 } else {
                     if isUserLoggedIn {
-                        DashboardView()  // Show Dashboard if logged in
+                        DashboardView()  // ✅ Show Dashboard if logged in
                     } else {
-                        SignInView()  // Show Sign In screen if not logged in
+                        SignInView()  // ✅ Show Sign In screen if not logged in
                     }
                 }
             }
             .onAppear {
+                // Listen for authentication state changes
                 Auth.auth().addStateDidChangeListener { _, user in
                     isUserLoggedIn = (user != nil)
                 }
