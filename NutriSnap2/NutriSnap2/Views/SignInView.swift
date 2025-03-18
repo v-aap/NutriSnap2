@@ -4,6 +4,7 @@ struct SignInView: View {
     @StateObject private var viewModel = SignInViewModel()
     @State private var navigateToGoalSetup = false
     @State private var navigateToDashboard = false
+    @State private var navigateToSignUp = false 
 
     var body: some View {
         NavigationView {
@@ -41,12 +42,26 @@ struct SignInView: View {
                 .padding(.horizontal)
                 .padding(.top, 20)
 
+                // Sign-Up Navigation Button
+                Button(action: {
+                    navigateToSignUp = true
+                }) {
+                    Text("Don't have an account? Sign Up")
+                        .foregroundColor(.blue)
+                        .font(.footnote)
+                        .underline()
+                }
+                .padding(.top, 10)
+
                 Spacer()
 
                 NavigationLink(destination: DashboardView(), isActive: $navigateToDashboard) {
                     EmptyView()
                 }
                 NavigationLink(destination: EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal)), isActive: $navigateToGoalSetup) {
+                    EmptyView()
+                }
+                NavigationLink(destination: SignUpView(), isActive: $navigateToSignUp) { 
                     EmptyView()
                 }
             }
