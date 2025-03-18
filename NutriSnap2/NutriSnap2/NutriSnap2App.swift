@@ -2,8 +2,6 @@
 //  NutriSnap2App.swift
 //  NutriSnap2
 //
-//  Created by Tech on 2025-03-14.
-//
 
 import SwiftUI
 import FirebaseCore
@@ -13,7 +11,9 @@ import FirebaseAuth
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        print("???? Firebase is configuring...") // Debug Log
         FirebaseApp.configure()
+        print("Firebase configured successfully") //  Debug Log
         return true
     }
 }
@@ -21,8 +21,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct NutriSnap2App: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @State private var isUserLoggedIn: Bool = Auth.auth().currentUser != nil
-    @State private var showSplash = true  // Controls splash screen visibility
+
+    @State private var isUserLoggedIn: Bool = false
+    @State private var showSplash = true  
+
+    init() {
+        print("App Initialized")
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -30,25 +35,33 @@ struct NutriSnap2App: App {
                 if showSplash {
                     SplashScreenView()
                         .onAppear {
-                            // Display splash for 2 seconds, then check auth status
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { 
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                 showSplash = false
                             }
                         }
                 } else {
                     if isUserLoggedIn {
-                        DashboardView()  // ✅ Show Dashboard if logged in
+                        DashboardView()  // Show Dashboard if logged in
                     } else {
-                        SignInView()  // ✅ Show Sign In screen if not logged in
+                        SignInView()  // Show Sign In screen if not logged in
                     }
                 }
             }
             .onAppear {
-                // Listen for authentication state changes
                 Auth.auth().addStateDidChangeListener { _, user in
                     isUserLoggedIn = (user != nil)
                 }
             }
+        }
+    }
+
+    // Ensure Firebase is set up correctly
+    private func setupFirebase() {
+        if FirebaseApp.app() == nil {
+            print("⚠️ FirebaseApp is not configured, configuring now...")
+            FirebaseApp.configure()
+        } else {
+            print("✅ FirebaseApp is already configured.")
         }
     }
 }
