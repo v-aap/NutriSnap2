@@ -7,8 +7,7 @@ struct MealCardView: View {
 
     var body: some View {
         HStack(spacing: 15) {
-            // Food Icon Placeholder (Customize as needed)
-            Image(systemName: "fork.knife") // Replace with an actual image if needed
+            Image(systemName: "fork.knife")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 50, height: 50)
@@ -18,34 +17,29 @@ struct MealCardView: View {
                 .cornerRadius(10)
 
             VStack(alignment: .leading, spacing: 5) {
-                // Meal Name
                 Text(meal.foodName)
                     .font(.headline)
                     .foregroundColor(.primary)
 
-                // Macronutrients & Calories
                 HStack(spacing: 20) {
                     VStack {
-                        Text("🔥") // Emoji on top
-                        Text("\(meal.calories) kcal") // Value below
+                        Text("🔥")
+                        Text("\(meal.calories) kcal")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
-                    
                     VStack {
-                        Text("🥩") // Emoji
-                        Text("\(meal.protein)g") // Value
+                        Text("🥩")
+                        Text("\(meal.protein)g")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
-
                     VStack {
                         Text("🍞")
                         Text("\(meal.carbs)g")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
-
                     VStack {
                         Text("🧈")
                         Text("\(meal.fats)g")
@@ -54,31 +48,22 @@ struct MealCardView: View {
                     }
                 }
 
-                // Meal Type and Date (if enabled)
                 if showType || showDate {
                     HStack {
                         if showType {
-                            HStack {
-                                Text("🍽 \(meal.mealType)")
-                            }
-                            .font(.footnote)
-                            .foregroundColor(.gray)
+                            Text("🍽 \(meal.mealType)").font(.footnote).foregroundColor(.gray)
                         }
                         if showDate {
-                            HStack {
-                                Text("📅 \(meal.date, style: .date)")
-                            }
-                            .font(.footnote)
-                            .foregroundColor(.gray)
+                            Text("📅 \(meal.date, style: .date)").font(.footnote).foregroundColor(.gray)
                         }
                     }
                 }
             }
 
-            Spacer() // Pushes everything left to ensure full-width layout
+            Spacer()
         }
         .padding()
-        .frame(maxWidth: .infinity) // Expands card to full width
+        .frame(maxWidth: .infinity)
         .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -90,6 +75,7 @@ struct MealCardView_Previews: PreviewProvider {
     static var previews: some View {
         MealCardView(
             meal: MealEntry(
+                userID: "testUserID", 
                 date: Date(),
                 foodName: "Example Meal",
                 calories: 400,
