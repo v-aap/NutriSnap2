@@ -41,7 +41,7 @@ struct NutriSnap2App: App {
                         }
                 } else {
                     if isUserLoggedIn {
-                        DashboardView()  // Show Dashboard if logged in
+                        RootContainerView()  // Show Dashboard if logged in
                     } else {
                         SignInView()  // Show Sign In screen if not logged in
                     }

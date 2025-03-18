@@ -3,8 +3,8 @@ import SwiftUI
 struct SignInView: View {
     @StateObject private var viewModel = SignInViewModel()
     @State private var navigateToGoalSetup = false
-    @State private var navigateToDashboard = false
-    @State private var navigateToSignUp = false 
+    @State private var navigateToRootContainer = false
+    @State private var navigateToSignUp = false
 
     var body: some View {
         NavigationView {
@@ -26,7 +26,7 @@ struct SignInView: View {
                 Button(action: {
                     viewModel.signIn { userHasGoal in
                         if userHasGoal {
-                            navigateToDashboard = true
+                            navigateToRootContainer = true
                         } else {
                             navigateToGoalSetup = true
                         }
@@ -55,7 +55,7 @@ struct SignInView: View {
 
                 Spacer()
 
-                NavigationLink(destination: DashboardView(), isActive: $navigateToDashboard) {
+                NavigationLink(destination: RootContainerView(), isActive: $navigateToRootContainer) {
                     EmptyView()
                 }
                 NavigationLink(destination: EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal)), isActive: $navigateToGoalSetup) {
