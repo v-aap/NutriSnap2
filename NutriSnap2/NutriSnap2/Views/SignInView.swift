@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SignInView: View {
     @StateObject private var viewModel = SignInViewModel()
-    @State private var showErrorAlert = false
+    @State private var navigateToGoalSetup = false
     @State private var navigateToDashboard = false
 
     var body: some View {
@@ -23,7 +23,13 @@ struct SignInView: View {
                     .padding(.horizontal)
 
                 Button(action: {
-                    viewModel.signIn()
+                    viewModel.signIn { userHasGoal in
+                        if userHasGoal {
+                            navigateToDashboard = true
+                        } else {
+                            navigateToGoalSetup = true
+                        }
+                    }
                 }) {
                     Text("Sign In")
                         .foregroundColor(.white)
@@ -40,30 +46,11 @@ struct SignInView: View {
                 NavigationLink(destination: DashboardView(), isActive: $navigateToDashboard) {
                     EmptyView()
                 }
-            }
-            .alert(isPresented: Binding<Bool>(
-                get: { viewModel.errorMessage != nil },
-                set: { _ in viewModel.errorMessage = nil }
-            )) {
-                Alert(
-                    title: Text("Login Failed"),
-                    message: Text(viewModel.errorMessage ?? "Unknown error"),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
-            .onChange(of: viewModel.isAuthenticated) { isAuthenticated in
-                if isAuthenticated {
-                    navigateToDashboard = true
+                NavigationLink(destination: EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal)), isActive: $navigateToGoalSetup) {
+                    EmptyView()
                 }
             }
             .navigationBarHidden(true)
         }
-    }
-}
-
-struct SignInView_Previews: PreviewProvider {
-    static var previews: some View {
-        SignInView()
-            .previewDevice("iPhone 14 Plus")
     }
 }
