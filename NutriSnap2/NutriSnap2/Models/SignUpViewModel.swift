@@ -1,6 +1,7 @@
 import SwiftUI
 
 class SignUpViewModel: ObservableObject {
+    // MARK: - Published Variables
     @Published var firstName = ""
     @Published var lastName = ""
     @Published var email = ""
@@ -9,16 +10,21 @@ class SignUpViewModel: ObservableObject {
     @Published var isRegistered = false
     @Published var errorMessage: String?
 
+    // MARK: - Form Validation
     var isFormValid: Bool {
-        !firstName.isEmpty &&
-        !lastName.isEmpty &&
-        !email.isEmpty &&
-        !password.isEmpty &&
-        password == confirmPassword
+        return ValidationService.isValidName(firstName) &&
+               ValidationService.isValidName(lastName) &&
+               ValidationService.isValidEmail(email) &&
+               ValidationService.isValidPassword(password) &&
+               password == confirmPassword
+    }
+
+    var passwordStrengthMessage: String {
+        return ValidationService.passwordStrengthMessage(password) ?? "Strong password!"
     }
 
     // MARK: - Sign Up Function
-    func signUp() {
+    func signUp(completion: @escaping (Bool) -> Void) {
         guard password == confirmPassword else {
             errorMessage = "Passwords do not match"
             return
@@ -27,11 +33,11 @@ class SignUpViewModel: ObservableObject {
         AuthService.shared.signUp(email: email, password: password, firstName: firstName, lastName: lastName) { success, error in
             DispatchQueue.main.async {
                 if success {
-                    print("✅ User successfully signed up: \(self.email)")
                     self.isRegistered = true
+                    completion(true)
                 } else {
-                    print("❌ Signup failed: \(error ?? "Unknown error")")
                     self.errorMessage = error
+                    completion(false)
                 }
             }
         }

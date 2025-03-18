@@ -6,17 +6,15 @@
 //
 
 import FirebaseAuth
-import FirebaseFirestore
 
 class AuthService {
     static let shared = AuthService()
-    private let db = Firestore.firestore()
 
-    // MARK: - Sign Up Function (Stores Basic User Data in Firestore)
+    // MARK: - Sign Up Function
     func signUp(email: String, password: String, firstName: String, lastName: String, completion: @escaping (Bool, String?) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
-                completion(false, error.localizedDescription)
+                completion(false, ErrorHandlingService.getAuthErrorMessage(error))
                 return
             }
 
@@ -25,17 +23,9 @@ class AuthService {
                 return
             }
 
-            // Create UserModel
-            let newUser = UserModel(
-                id: user.uid,
-                firstName: firstName,
-                lastName: lastName,
-                email: email
-            )
-
-            // Store in Firestore
-            self.db.collection("users").document(user.uid).setData(newUser.toFirestore()) { error in
-                completion(error == nil, error?.localizedDescription)
+            let newUser = UserModel(id: user.uid, firstName: firstName, lastName: lastName, email: email)
+            FirestoreService.shared.saveUser(userID: user.uid, data: newUser.toFirestore()) { success in
+                completion(success, success ? nil : "Failed to store user data.")
             }
         }
     }
@@ -44,56 +34,21 @@ class AuthService {
     func signIn(email: String, password: String, completion: @escaping (Bool, String?) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
             if let error = error {
-                completion(false, error.localizedDescription)
+                completion(false, ErrorHandlingService.getAuthErrorMessage(error))
                 return
             }
             completion(true, nil)
         }
     }
 
-    // MARK: - Fetch User Data
-    func fetchUserData(completion: @escaping (UserModel?) -> Void) {
-        guard let userID = Auth.auth().currentUser?.uid else {
-            completion(nil)
-            return
-        }
-
-        db.collection("users").document(userID).getDocument { snapshot, error in
-            guard let document = snapshot, document.exists, let data = document.data() else {
-                completion(nil)
-                return
+    // MARK: - Forgot Password Function
+    func resetPassword(email: String, completion: @escaping (Bool, String?) -> Void) {
+        Auth.auth().sendPasswordReset(withEmail: email) { error in
+            if let error = error {
+                completion(false, ErrorHandlingService.getAuthErrorMessage(error))
+            } else {
+                completion(true, "Password reset email has been sent.")
             }
-
-            let user = UserModel.fromFirestore(id: userID, data: data)
-            completion(user)
-        }
-    }
-
-    // MARK: - Check if User Has a Nutrition Goal
-    func checkIfUserHasGoal(completion: @escaping (Bool) -> Void) {
-        fetchUserData { user in
-            completion(user?.hasSetGoal ?? false)
-        }
-    }
-
-    // MARK: - Update User Goal
-    func updateUserGoal(_ goal: NutritionGoal, completion: @escaping (Bool) -> Void) {
-        guard let userID = Auth.auth().currentUser?.uid else {
-            completion(false)
-            return
-        }
-
-        let goalData: [String: Any] = [
-            "calorieGoal": goal.calorieGoal,
-            "carbPercentage": goal.carbPercentage,
-            "proteinPercentage": goal.proteinPercentage,
-            "fatPercentage": goal.fatPercentage,
-            "selectedPreset": goal.selectedPreset,
-            "hasSetGoal": true  // Mark user as having set their goal
-        ]
-
-        db.collection("users").document(userID).updateData(goalData) { error in
-            completion(error == nil)
         }
     }
 
@@ -102,8 +57,18 @@ class AuthService {
         do {
             try Auth.auth().signOut()
             completion(true, nil)
-        } catch let signOutError {
-            completion(false, signOutError.localizedDescription)
+        } catch let error {
+            completion(false, ErrorHandlingService.getSystemErrorMessage(error))
         }
+    }
+
+    // MARK: - Check if User is Logged In
+    func isUserLoggedIn() -> Bool {
+        return Auth.auth().currentUser != nil
+    }
+
+    // MARK: - Get Current User ID
+    func getCurrentUserID() -> String? {
+        return Auth.auth().currentUser?.uid
     }
 }
