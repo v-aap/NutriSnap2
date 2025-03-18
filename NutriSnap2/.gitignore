@@ -1,0 +1,8 @@
+# Ignore Xcode user-specific files and folders
+xcuserdata/
+*.xcuserdatad
+
+# Ignore build artifacts and derived data
+build/
+DerivedData/
+
