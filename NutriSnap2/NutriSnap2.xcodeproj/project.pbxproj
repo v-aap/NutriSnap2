@@ -35,7 +35,6 @@
 		18C2F8C22D84BD510066CA1E /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2F8C12D84BD510066CA1E /* SplashScreenView.swift */; };
 		18C2F8C42D84BE640066CA1E /* RootContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2F8C32D84BE640066CA1E /* RootContainerView.swift */; };
 		C21322242D8752480039FFC0 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322232D8752480039FFC0 /* UserModel.swift */; };
-		C21322322D8754B70039FFC0 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C213222F2D8754B70039FFC0 /* SecurityManager.swift */; };
 		C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21322332D8754F00039FFC0 /* PieChartView.swift */; };
 		C27F8E752D892EA800BDCDE0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C27F8E742D892EA800BDCDE0 /* GoogleService-Info.plist */; };
 		C27F8E782D8932A900BDCDE0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C27F8E772D8932A900BDCDE0 /* FirebaseAnalytics */; };
@@ -44,8 +43,9 @@
 		C27F8E7E2D893DBD00BDCDE0 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = C27F8E7D2D893DBD00BDCDE0 /* FirebaseCore */; };
 		C27F8E802D893DBD00BDCDE0 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = C27F8E7F2D893DBD00BDCDE0 /* FirebaseDatabase */; };
 		C27F8E822D893DBD00BDCDE0 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C27F8E812D893DBD00BDCDE0 /* FirebaseFirestore */; };
+		C27F8E842D8941DC00BDCDE0 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E832D8941DC00BDCDE0 /* AuthService.swift */; };
+		C27F8E8D2D89445A00BDCDE0 /* FirestoneService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E8C2D89445A00BDCDE0 /* FirestoneService.swift */; };
 		C6A73D592D88BF160059AAD6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C6A73D582D88BF160059AAD6 /* RealmSwift */; };
-		C6A73D5B2D88C27B0059AAD6 /* RealmDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,10 +97,10 @@
 		18C2F8C12D84BD510066CA1E /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		18C2F8C32D84BE640066CA1E /* RootContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootContainerView.swift; sourceTree = "<group>"; };
 		C21322232D8752480039FFC0 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
-		C213222F2D8754B70039FFC0 /* SecurityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		C21322332D8754F00039FFC0 /* PieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		C27F8E742D892EA800BDCDE0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
-		C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmDBManager.swift; sourceTree = "<group>"; };
+		C27F8E832D8941DC00BDCDE0 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		C27F8E8C2D89445A00BDCDE0 /* FirestoneService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoneService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,8 +234,8 @@
 		C21322302D8754B70039FFC0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				C213222F2D8754B70039FFC0 /* SecurityManager.swift */,
-				C6A73D5A2D88C27B0059AAD6 /* RealmDBManager.swift */,
+				C27F8E832D8941DC00BDCDE0 /* AuthService.swift */,
+				C27F8E8C2D89445A00BDCDE0 /* FirestoneService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -394,17 +394,17 @@
 				18C2F8B32D84AF470066CA1E /* ProfileView.swift in Sources */,
 				18C2F8B42D84AF470066CA1E /* MealDetailView.swift in Sources */,
 				18C2F8BC2D84AF470066CA1E /* MealCardView.swift in Sources */,
-				C21322322D8754B70039FFC0 /* SecurityManager.swift in Sources */,
 				18C2F8B12D84AF470066CA1E /* DashboardView.swift in Sources */,
 				18C2F8BA2D84AF470066CA1E /* EditCalorieGoalView.swift in Sources */,
 				18C2F8AF2D84AF470066CA1E /* NutritionGoalModel.swift in Sources */,
 				18C2F8B52D84AF470066CA1E /* ChangePasswordView.swift in Sources */,
 				18C2F8AE2D84AF470066CA1E /* SignInViewModel.swift in Sources */,
 				18C2F8AD2D84AF470066CA1E /* MealEntryModel.swift in Sources */,
+				C27F8E8D2D89445A00BDCDE0 /* FirestoneService.swift in Sources */,
 				18C2F8AC2D84AF470066CA1E /* SignUpViewModel.swift in Sources */,
 				18C2F8C22D84BD510066CA1E /* SplashScreenView.swift in Sources */,
-				C6A73D5B2D88C27B0059AAD6 /* RealmDBManager.swift in Sources */,
 				18C2F8BF2D84AF470066CA1E /* SignUpView.swift in Sources */,
+				C27F8E842D8941DC00BDCDE0 /* AuthService.swift in Sources */,
 				18C2F8B72D84AF470066CA1E /* EditPersonalInfoView.swift in Sources */,
 				18C2F8B82D84AF470066CA1E /* LogView.swift in Sources */,
 				18C2F8B92D84AF470066CA1E /* SignInView.swift in Sources */,

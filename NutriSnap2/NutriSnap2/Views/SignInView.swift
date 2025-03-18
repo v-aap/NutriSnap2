@@ -3,6 +3,7 @@ import SwiftUI
 struct SignInView: View {
     @StateObject private var viewModel = SignInViewModel()
     @State private var showErrorAlert = false
+    @State private var navigateToDashboard = false
 
     var body: some View {
         NavigationView {
@@ -22,12 +23,7 @@ struct SignInView: View {
                     .padding(.horizontal)
 
                 Button(action: {
-                    Task {
-                        await viewModel.signIn()
-                        if !viewModel.isAuthenticated {
-                            showErrorAlert = true
-                        }
-                    }
+                    viewModel.signIn()
                 }) {
                     Text("Sign In")
                         .foregroundColor(.white)
@@ -41,19 +37,29 @@ struct SignInView: View {
 
                 Spacer()
 
-                .alert(isPresented: $showErrorAlert) {
-                    Alert(
-                        title: Text("Login Failed"),
-                        message: Text("Invalid email or password. Please try again."),
-                        dismissButton: .default(Text("OK"))
-                    )
+                NavigationLink(destination: DashboardView(), isActive: $navigateToDashboard) {
+                    EmptyView()
+                }
+            }
+            .alert(isPresented: Binding<Bool>(
+                get: { viewModel.errorMessage != nil },
+                set: { _ in viewModel.errorMessage = nil }
+            )) {
+                Alert(
+                    title: Text("Login Failed"),
+                    message: Text(viewModel.errorMessage ?? "Unknown error"),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+            .onChange(of: viewModel.isAuthenticated) { isAuthenticated in
+                if isAuthenticated {
+                    navigateToDashboard = true
                 }
             }
             .navigationBarHidden(true)
         }
     }
 }
-
 
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
