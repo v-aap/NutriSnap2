@@ -7,28 +7,16 @@ class SignInViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     // MARK: - Sign In Function
-    func signIn() {
+    func signIn(completion: @escaping (Bool) -> Void) {
         AuthService.shared.signIn(email: email, password: password) { success, error in
             DispatchQueue.main.async {
                 if success {
-                    self.isAuthenticated = true
+                    AuthService.shared.checkIfUserHasGoal { userHasGoal in
+                        completion(userHasGoal)
+                    }
                 } else {
                     self.errorMessage = error
-                }
-            }
-        }
-    }
-
-    // MARK: - Logout Function
-    func logout() {
-        AuthService.shared.logout { success, error in
-            DispatchQueue.main.async {
-                if success {
-                    self.isAuthenticated = false
-                    self.email = ""
-                    self.password = ""
-                } else {
-                    self.errorMessage = error
+                    completion(false)
                 }
             }
         }
