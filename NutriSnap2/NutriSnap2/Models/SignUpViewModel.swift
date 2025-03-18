@@ -27,8 +27,10 @@ class SignUpViewModel: ObservableObject {
         AuthService.shared.signUp(email: email, password: password, firstName: firstName, lastName: lastName) { success, error in
             DispatchQueue.main.async {
                 if success {
+                    print("✅ User successfully signed up: \(self.email)")
                     self.isRegistered = true
                 } else {
+                    print("❌ Signup failed: \(error ?? "Unknown error")")
                     self.errorMessage = error
                 }
             }
