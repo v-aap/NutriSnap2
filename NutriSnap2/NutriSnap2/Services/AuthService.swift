@@ -12,7 +12,7 @@ class AuthService {
     static let shared = AuthService()
     private let db = Firestore.firestore()
 
-    // MARK: - Sign Up Function (Without Nutrition Goals)
+    // MARK: - Sign Up Function 
     func signUp(email: String, password: String, firstName: String, lastName: String, completion: @escaping (Bool, String?) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
@@ -30,12 +30,23 @@ class AuthService {
                 "firstName": firstName,
                 "lastName": lastName,
                 "email": email,
-                "hasSetGoal": false  // Track if user has set their goal
+                "hasSetGoal": false  
             ]
 
             self.db.collection("users").document(user.uid).setData(userData) { error in
                 completion(error == nil, error?.localizedDescription)
             }
+        }
+    }
+
+    // MARK: - Sign In Function 
+    func signIn(email: String, password: String, completion: @escaping (Bool, String?) -> Void) {
+        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+            if let error = error {
+                completion(false, error.localizedDescription)
+                return
+            }
+            completion(true, nil)
         }
     }
 
@@ -68,7 +79,7 @@ class AuthService {
             "proteinPercentage": goal.proteinPercentage,
             "fatPercentage": goal.fatPercentage,
             "selectedPreset": goal.selectedPreset,
-            "hasSetGoal": true  // Mark user as having set their goal
+            "hasSetGoal": true  
         ]
 
         db.collection("users").document(userID).updateData(goalData) { error in
