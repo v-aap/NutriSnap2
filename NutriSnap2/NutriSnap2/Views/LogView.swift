@@ -1,4 +1,5 @@
 import SwiftUI
+import FirebaseAuth
 
 struct LogView: View {
     @State private var image: UIImage? = nil
@@ -72,16 +73,21 @@ struct LogView: View {
             ImagePicker(image: $image, sourceType: sourceType)
         }
         .fullScreenCover(isPresented: $navigateToMealEntry) {
-            MealEntryView(meal: MealEntry(
-                date: Date(),
-                foodName: "",
-                calories: 0,
-                carbs: 0,
-                protein: 0,
-                fats: 0,
-                isManualEntry: true,
-                mealType: ""
-            )) 
+            if let userID = Auth.auth().currentUser?.uid {
+                MealEntryView(meal: MealEntry(
+                    userID: userID, 
+                    date: Date(),
+                    foodName: "",
+                    calories: 0,
+                    carbs: 0,
+                    protein: 0,
+                    fats: 0,
+                    isManualEntry: true,
+                    mealType: ""
+                ))
+            } else {
+                Text("Error: No user logged in") // Fallback in case user is not logged in
+            }
         }
     }
 }

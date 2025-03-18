@@ -12,7 +12,6 @@ struct SignUpView: View {
                     .fontWeight(.bold)
                     .padding(.top, 40)
 
-                // Required Fields with Validation Indication
                 TextField("First Name *", text: $viewModel.firstName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
@@ -34,55 +33,42 @@ struct SignUpView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
 
-                TextField("Daily Calorie Goal (Optional)", text: Binding(
-                    get: { viewModel.dailyCalorieGoal.map { String($0) } ?? "" },
-                    set: { viewModel.dailyCalorieGoal = Int($0) }
-                ))
-                .keyboardType(.numberPad)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-
-                // Disable button if form is invalid
                 Button(action: {
-                    Task {
-                        await viewModel.signUp()
-                    }
+                    viewModel.signUp()
                 }) {
                     Text("Sign Up")
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(viewModel.isFormValid ? Color.green : Color.gray) // Disabled if invalid
+                        .background(viewModel.isFormValid ? Color.green : Color.gray)
                         .cornerRadius(8)
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
-                .disabled(!viewModel.isFormValid) // Disable if fields are empty
+                .disabled(!viewModel.isFormValid)
 
                 Spacer()
 
-                // NavigationLink to SignInView
                 NavigationLink(destination: SignInView(), isActive: $navigateToSignIn) {
                     EmptyView()
                 }
             }
-            .navigationBarHidden(true)
-
-            // Alert for Both Success & Error
             .alert(isPresented: Binding<Bool>(
-                get: { viewModel.isRegistered },
-                set: { newValue in viewModel.isRegistered = newValue }
+                get: { viewModel.errorMessage != nil },
+                set: { _ in viewModel.errorMessage = nil }
             )) {
                 Alert(
-                    title: Text(viewModel.isRegistered ? "Success" : "Error"),
-                    message: Text(viewModel.isRegistered ? "Account created successfully!" : "There was an error creating your account. Please try again."),
-                    dismissButton: .default(Text("OK")) {
-                        if viewModel.isRegistered {
-                            navigateToSignIn = true
-                        }
-                    }
+                    title: Text("Sign Up Failed"),
+                    message: Text(viewModel.errorMessage ?? "Unknown error"),
+                    dismissButton: .default(Text("OK"))
                 )
             }
+            .onChange(of: viewModel.isRegistered) { isRegistered in
+                if isRegistered {
+                    navigateToSignIn = true
+                }
+            }
+            .navigationBarHidden(true)
         }
     }
 }

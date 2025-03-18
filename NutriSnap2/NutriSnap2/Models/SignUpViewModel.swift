@@ -1,5 +1,4 @@
 import SwiftUI
-import RealmSwift
 
 class SignUpViewModel: ObservableObject {
     @Published var firstName = ""
@@ -7,9 +6,8 @@ class SignUpViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
     @Published var confirmPassword = ""
-    @Published var dailyCalorieGoal: Int? = nil
-
     @Published var isRegistered = false
+    @Published var errorMessage: String?
 
     var isFormValid: Bool {
         !firstName.isEmpty &&
@@ -20,63 +18,22 @@ class SignUpViewModel: ObservableObject {
     }
 
     // MARK: - Sign Up Function
-    func signUp() async {
+    func signUp() {
         guard password == confirmPassword else {
-            print("Passwords do not match")
+            errorMessage = "Passwords do not match"
             return
         }
 
-        let app = App(id: "nutrisnap-uaftlyk")
-
-        do {
-            try await app.emailPasswordAuth.registerUser(email: email, password: password)
-            print("Registration successful!")
-
-            // Auto-login after registration
-            let success = await loginUser()
-            
-            if success {
-                await saveUserToDatabase()
-                DispatchQueue.main.async {
+        AuthService.shared.signUp(email: email, password: password, firstName: firstName, lastName: lastName) { success, error in
+            DispatchQueue.main.async {
+                if success {
+                    print("✅ User successfully signed up: \(self.email)")
                     self.isRegistered = true
+                } else {
+                    print("❌ Signup failed: \(error ?? "Unknown error")")
+                    self.errorMessage = error
                 }
             }
-        } catch {
-            print("Registration failed: \(error.localizedDescription)")
-        }
-    }
-
-    // MARK: - Login User After Registration
-    func loginUser() async -> Bool {
-        let app = App(id: "nutrisnap-uaftlyk")
-
-        do {
-            let credentials = Credentials.emailPassword(email: email, password: password)
-            let user = try await app.login(credentials: credentials)
-            print("Login successful for: \(user.id)")
-            return true
-        } catch {
-            print("Login failed: \(error.localizedDescription)")
-            return false
-        }
-    }
-
-    // MARK: - Save User to Database
-    func saveUserToDatabase() async {
-        let userModel = UserModel(
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            dailyCalorieGoal: dailyCalorieGoal
-        )
-
-        let user = App(id: "nutrisnap-uaftlyk").currentUser
-        if let user = user {
-            let realm = try! await Realm(configuration: user.flexibleSyncConfiguration())
-            try! realm.write {
-                realm.add(userModel)
-            }
-            print("User data saved to MongoDB Realm")
         }
     }
 }

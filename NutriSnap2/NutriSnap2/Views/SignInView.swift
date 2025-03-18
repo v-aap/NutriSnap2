@@ -2,7 +2,9 @@ import SwiftUI
 
 struct SignInView: View {
     @StateObject private var viewModel = SignInViewModel()
-    @State private var showErrorAlert = false
+    @State private var navigateToGoalSetup = false
+    @State private var navigateToRootContainer = false
+    @State private var navigateToSignUp = false
 
     var body: some View {
         NavigationView {
@@ -22,10 +24,11 @@ struct SignInView: View {
                     .padding(.horizontal)
 
                 Button(action: {
-                    Task {
-                        await viewModel.signIn()
-                        if !viewModel.isAuthenticated {
-                            showErrorAlert = true
+                    viewModel.signIn { userHasGoal in
+                        if userHasGoal {
+                            navigateToRootContainer = true
+                        } else {
+                            navigateToGoalSetup = true
                         }
                     }
                 }) {
@@ -39,25 +42,30 @@ struct SignInView: View {
                 .padding(.horizontal)
                 .padding(.top, 20)
 
+                // Sign-Up Navigation Button
+                Button(action: {
+                    navigateToSignUp = true
+                }) {
+                    Text("Don't have an account? Sign Up")
+                        .foregroundColor(.blue)
+                        .font(.footnote)
+                        .underline()
+                }
+                .padding(.top, 10)
+
                 Spacer()
 
-                .alert(isPresented: $showErrorAlert) {
-                    Alert(
-                        title: Text("Login Failed"),
-                        message: Text("Invalid email or password. Please try again."),
-                        dismissButton: .default(Text("OK"))
-                    )
+                NavigationLink(destination: RootContainerView(), isActive: $navigateToRootContainer) {
+                    EmptyView()
+                }
+                NavigationLink(destination: EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal)), isActive: $navigateToGoalSetup) {
+                    EmptyView()
+                }
+                NavigationLink(destination: SignUpView(), isActive: $navigateToSignUp) { 
+                    EmptyView()
                 }
             }
             .navigationBarHidden(true)
         }
-    }
-}
-
-
-struct SignInView_Previews: PreviewProvider {
-    static var previews: some View {
-        SignInView()
-            .previewDevice("iPhone 14 Plus")
     }
 }
