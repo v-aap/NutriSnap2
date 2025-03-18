@@ -97,20 +97,33 @@ class FirestoreService {
             }
         }
     }
+    
+    // New: Save Meal function
+    func saveMeal(_ meal: MealEntry, completion: @escaping (Bool) -> Void) {
+        let mealData: [String: Any] = [
+            "userID": meal.userID,
+            "date": meal.date,
+            "foodName": meal.foodName,
+            "calories": meal.calories,
+            "carbs": meal.carbs,
+            "protein": meal.protein,
+            "fats": meal.fats,
+            "isManualEntry": meal.isManualEntry,
+            "mealType": meal.mealType,
+            "photoURL": meal.photoURL ?? ""
+        ]
+        
+        db.collection("meals").addDocument(data: mealData) { error in
+            if let error = error {
+                print("Error adding meal: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                completion(true)
+            }
+        }
+    }
 
-//    // MARK: - Save Meal Entry
-//    func saveMealEntry(meal: MealEntry, completion: @escaping (Bool) -> Void) {
-//        db.collection("meals").document(meal.id.uuidString).setData(meal.toFirestore()) { error in
-//            if let error = error {
-//                print("❌ Error saving meal entry: \(error.localizedDescription)")
-//                completion(false)
-//            } else {
-//                print("✅ Meal entry saved successfully.")
-//                completion(true)
-//            }
-//        }
-//    }
-//
+   
 //    // MARK: - Fetch Meals
 //    func fetchMeals(completion: @escaping ([MealEntry]) -> Void) {
 //        guard let userID = AuthService.shared.getCurrentUserID() else {

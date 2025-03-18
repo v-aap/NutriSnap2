@@ -6,6 +6,7 @@ struct MealDetailView: View {
     @State private var showDeleteConfirmation = false
     @Environment(\.presentationMode) var presentationMode
     var onDelete: ((MealEntry) -> Void)?
+    
 
     var body: some View {
         VStack {
