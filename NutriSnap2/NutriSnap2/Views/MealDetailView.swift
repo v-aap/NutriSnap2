@@ -5,7 +5,7 @@ struct MealDetailView: View {
     @State private var navigateToEdit = false
     @State private var showDeleteConfirmation = false
     @Environment(\.presentationMode) var presentationMode
-    var onDelete: ((MealEntry) -> Void)? // ✅ Closure to handle deletion externally
+    var onDelete: ((MealEntry) -> Void)?
 
     var body: some View {
         VStack {
@@ -18,9 +18,8 @@ struct MealDetailView: View {
                 .font(.title2)
                 .padding(.bottom, 5)
 
-            // ✅ Pie Chart for Macronutrients
             PieChartView(carbs: meal.carbs, protein: meal.protein, fats: meal.fats, totalCalories: meal.calories)
-                .frame(height: 250) // Adjust size as needed
+                .frame(height: 250)
                 .padding()
 
             Text("Date: \(meal.date, style: .date)")
@@ -34,7 +33,6 @@ struct MealDetailView: View {
                     navigateToEdit = true
                 }) {
                     Text("Edit Meal")
-                        .font(.headline)
                         .foregroundColor(.white)
                         .padding()
                         .frame(width: 150, height: 50)
@@ -47,7 +45,6 @@ struct MealDetailView: View {
                     showDeleteConfirmation = true
                 }) {
                     Text("Delete Meal")
-                        .font(.headline)
                         .foregroundColor(.white)
                         .padding()
                         .frame(width: 150, height: 50)
@@ -69,13 +66,12 @@ struct MealDetailView: View {
         }
         .navigationTitle("Meal Details")
         .fullScreenCover(isPresented: $navigateToEdit) {
-            MealEntryView(meal: meal) // ✅ Opens MealEntryView for editing
+            MealEntryView(meal: meal)
         }
     }
 
-    // Delete meal and go back to previous screen
     private func deleteMeal() {
-        onDelete?(meal) // ✅ Calls external deletion function
+        onDelete?(meal)
         presentationMode.wrappedValue.dismiss()
     }
 }

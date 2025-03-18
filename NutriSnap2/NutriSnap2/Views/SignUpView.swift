@@ -2,87 +2,91 @@ import SwiftUI
 
 struct SignUpView: View {
     @StateObject private var viewModel = SignUpViewModel()
-    @State private var navigateToSignIn = false
+    @State private var navigateToRootContainer = false
+    @State private var showSuccessAlert = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 Text("Sign Up")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 40)
 
-                // Required Fields with Validation Indication
+                // MARK: - First Name Input
                 TextField("First Name *", text: $viewModel.firstName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disableAutocorrection(true)
+                    .autocapitalization(.words)
                     .padding(.horizontal)
 
+                // MARK: - Last Name Input
                 TextField("Last Name *", text: $viewModel.lastName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disableAutocorrection(true)
+                    .autocapitalization(.words)
                     .padding(.horizontal)
 
+                // MARK: - Email Input
                 TextField("name@example.com *", text: $viewModel.email)
                     .keyboardType(.emailAddress)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
                     .padding(.horizontal)
 
+                // MARK: - Password Input
                 SecureField("Password *", text: $viewModel.password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
 
+                // MARK: - Confirm Password Input
                 SecureField("Confirm Password *", text: $viewModel.confirmPassword)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
 
-                TextField("Daily Calorie Goal (Optional)", text: Binding(
-                    get: { viewModel.dailyCalorieGoal.map { String($0) } ?? "" },
-                    set: { viewModel.dailyCalorieGoal = Int($0) }
-                ))
-                .keyboardType(.numberPad)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-
-                // Disable button if form is invalid
+                // MARK: - Sign Up Button
                 Button(action: {
-                    Task {
-                        await viewModel.signUp()
+                    viewModel.signUp { success in
+                        if success {
+                            showSuccessAlert = true
+                        }
                     }
                 }) {
                     Text("Sign Up")
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(viewModel.isFormValid ? Color.green : Color.gray) // Disabled if invalid
+                        .background(viewModel.isFormValid ? Color.green : Color.gray)
                         .cornerRadius(8)
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
-                .disabled(!viewModel.isFormValid) // Disable if fields are empty
+                .disabled(!viewModel.isFormValid)
 
                 Spacer()
-
-                // NavigationLink to SignInView
-                NavigationLink(destination: SignInView(), isActive: $navigateToSignIn) {
-                    EmptyView()
-                }
             }
-            .navigationBarHidden(true)
-
-            // Alert for Both Success & Error
             .alert(isPresented: Binding<Bool>(
-                get: { viewModel.isRegistered },
-                set: { newValue in viewModel.isRegistered = newValue }
+                get: { viewModel.errorMessage != nil },
+                set: { _ in viewModel.errorMessage = nil }
             )) {
                 Alert(
-                    title: Text(viewModel.isRegistered ? "Success" : "Error"),
-                    message: Text(viewModel.isRegistered ? "Account created successfully!" : "There was an error creating your account. Please try again."),
-                    dismissButton: .default(Text("OK")) {
-                        if viewModel.isRegistered {
-                            navigateToSignIn = true
-                        }
-                    }
+                    title: Text("Sign Up Failed"),
+                    message: Text(viewModel.errorMessage ?? "Unknown error"),
+                    dismissButton: .default(Text("OK"))
                 )
             }
+            .alert("Account Created", isPresented: $showSuccessAlert) {
+                Button("OK") {
+                    navigateToRootContainer = true
+                }
+            } message: {
+                Text("Your account has been successfully created. Tap OK to proceed to login.")
+            }
+            .navigationDestination(isPresented: $navigateToRootContainer) {
+                RootContainerView()
+            }
+            .navigationBarHidden(true)
         }
     }
 }

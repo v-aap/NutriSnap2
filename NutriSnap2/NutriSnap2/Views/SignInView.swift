@@ -2,30 +2,44 @@ import SwiftUI
 
 struct SignInView: View {
     @StateObject private var viewModel = SignInViewModel()
-    @State private var showErrorAlert = false
+    @State private var navigateToGoalSetup = false
+    @State private var navigateToRootContainer = false
+    @State private var navigateToSignUp = false
+    @State private var showPasswordResetAlert = false
+    @State private var passwordResetMessage: String = ""
+    @State private var showSignInErrorAlert = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 Text("Sign In")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 40)
 
+                // MARK: - Email Input
                 TextField("Email", text: $viewModel.email)
                     .keyboardType(.emailAddress)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
                     .padding(.horizontal)
 
+                // MARK: - Password Input
                 SecureField("Password", text: $viewModel.password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
 
+                // MARK: - Sign In Button
                 Button(action: {
-                    Task {
-                        await viewModel.signIn()
-                        if !viewModel.isAuthenticated {
-                            showErrorAlert = true
+                    viewModel.signIn { userHasGoal in
+                        if userHasGoal {
+                            navigateToRootContainer = true
+                        } else {
+                            navigateToGoalSetup = true
+                        }
+                        if viewModel.errorMessage != nil {
+                            showSignInErrorAlert = true
                         }
                     }
                 }) {
@@ -33,31 +47,62 @@ struct SignInView: View {
                         .foregroundColor(.white)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.green)
+                        .background(viewModel.isFormValid ? Color.green : Color.gray)
                         .cornerRadius(8)
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
+                .disabled(!viewModel.isFormValid)
+
+                // Forgot Password Button
+                Button(action: {
+                    AuthService.shared.resetPassword(email: viewModel.email) { success, message in
+                        passwordResetMessage = message ?? "Unknown error"
+                        showPasswordResetAlert = true
+                    }
+                }) {
+                    Text("Forgot Password?")
+                        .foregroundColor(.blue)
+                        .font(.footnote)
+                        .underline()
+                }
+                .padding(.top, 5)
+
+                // Sign-Up Navigation Button
+                Button(action: {
+                    navigateToSignUp = true
+                }) {
+                    Text("Don't have an account? Sign Up")
+                        .foregroundColor(.blue)
+                        .font(.footnote)
+                        .underline()
+                }
+                .padding(.top, 5)
 
                 Spacer()
 
-                .alert(isPresented: $showErrorAlert) {
-                    Alert(
-                        title: Text("Login Failed"),
-                        message: Text("Invalid email or password. Please try again."),
-                        dismissButton: .default(Text("OK"))
-                    )
+                // MARK: - Navigation Destinations
+                .navigationDestination(isPresented: $navigateToRootContainer) {
+                    RootContainerView()
+                }
+                .navigationDestination(isPresented: $navigateToGoalSetup) {
+                    EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal))
+                }
+                .navigationDestination(isPresented: $navigateToSignUp) {
+                    SignUpView()
                 }
             }
             .navigationBarHidden(true)
+            .alert("Password Reset", isPresented: $showPasswordResetAlert) {
+                Button("OK") {}
+            } message: {
+                Text(passwordResetMessage)
+            }
+            .alert("Sign In Failed", isPresented: $showSignInErrorAlert) {
+                Button("OK") {}
+            } message: {
+                Text(viewModel.errorMessage ?? "Unknown error")
+            }
         }
-    }
-}
-
-
-struct SignInView_Previews: PreviewProvider {
-    static var previews: some View {
-        SignInView()
-            .previewDevice("iPhone 14 Plus")
     }
 }

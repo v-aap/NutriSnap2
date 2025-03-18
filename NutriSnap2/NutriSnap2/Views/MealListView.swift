@@ -1,9 +1,14 @@
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
 
 struct MealListView: View {
     @State private var selectedDate: Date = Date()
     @State private var selectedMealType: String? = nil
     @State private var showDatePicker = false
+    @State private var meals: [MealEntry] = []
+    
+    private let db = Firestore.firestore()
     
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -11,13 +16,6 @@ struct MealListView: View {
         return formatter
     }()
     
-    @State private var meals: [MealEntry] = [
-        MealEntry(date: parseDate("2025-03-01"), foodName: "Avocado Toast", calories: 350, carbs: 40, protein: 10, fats: 15, isManualEntry: true, mealType: "Breakfast"),
-        MealEntry(date: parseDate("2025-03-01"), foodName: "Grilled Salmon", calories: 600, carbs: 20, protein: 50, fats: 25, isManualEntry: false, mealType: "Lunch"),
-        MealEntry(date: parseDate("2025-03-02"), foodName: "Omelette", calories: 300, carbs: 30, protein: 15, fats: 10, isManualEntry: true, mealType: "Breakfast"),
-        MealEntry(date: parseDate("2025-03-02"), foodName: "Chicken Caesar Salad", calories: 450, carbs: 20, protein: 40, fats: 10, isManualEntry: false, mealType: "Lunch"),
-    ]
-
     private var filteredMeals: [MealEntry] {
         meals.filter { meal in
             Calendar.current.isDate(meal.date, inSameDayAs: selectedDate) &&
@@ -52,7 +50,7 @@ struct MealListView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.top, 15) // Ensure spacing at the top
+            .padding(.top, 15)
 
             // ✅ Meal Type Filter (Segmented Control)
             Picker("Meal Type", selection: $selectedMealType) {
@@ -78,13 +76,13 @@ struct MealListView: View {
                         .padding(.horizontal)
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity) // Ensures proper layout
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .navigationBarTitleDisplayMode(.inline) // ✅ Keeps things neat
-        .frame(maxHeight: .infinity, alignment: .top) // ✅ Keeps content at the top
+        .navigationBarTitleDisplayMode(.inline)
+        .frame(maxHeight: .infinity, alignment: .top)
 
-        // ✅ Date Picker as Sheet (Fixed)
+        // ✅ Date Picker as Sheet
         .sheet(isPresented: $showDatePicker) {
             VStack {
                 Text("Select a Date")
@@ -109,19 +107,47 @@ struct MealListView: View {
                 .padding(.horizontal)
             }
             .presentationDetents([.large])
-            .interactiveDismissDisabled(false) // Swipe down dismiss
+        }
+        .onAppear {
+            fetchMeals()
         }
     }
 
-    // ✅ Function to Parse Date
-    private static func parseDate(_ dateString: String) -> Date {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.date(from: dateString) ?? Date()
+    // ✅ Fetch Meals from Firestore
+    private func fetchMeals() {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("❌ Error: No user logged in.")
+            return
+        }
+
+        db.collection("meals")
+            .whereField("userID", isEqualTo: userID)
+            .order(by: "date", descending: true)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("❌ Error fetching meals: \(error.localizedDescription)")
+                    return
+                }
+
+                self.meals = snapshot?.documents.compactMap { doc -> MealEntry? in
+                    let data = doc.data()
+                    return MealEntry(
+                        userID: data["userID"] as? String ?? "",
+                        date: (data["date"] as? Timestamp)?.dateValue() ?? Date(),
+                        foodName: data["foodName"] as? String ?? "",
+                        calories: data["calories"] as? Int ?? 0,
+                        carbs: data["carbs"] as? Int ?? 0,
+                        protein: data["protein"] as? Int ?? 0,
+                        fats: data["fats"] as? Int ?? 0,
+                        isManualEntry: data["isManualEntry"] as? Bool ?? true,
+                        mealType: data["mealType"] as? String ?? "Unknown"
+                    )
+                } ?? []
+            }
     }
 }
 
-// MARK: - Preview
+// MARK: - Preview (Fixed with `userID`)
 struct MealListView_Previews: PreviewProvider {
     static var previews: some View {
         MealListView()
