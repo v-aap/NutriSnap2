@@ -33,14 +33,6 @@ struct SignUpView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
 
-                TextField("Daily Calorie Goal (Optional)", text: Binding(
-                    get: { viewModel.dailyCalorieGoal.map { String($0) } ?? "" },
-                    set: { viewModel.dailyCalorieGoal = Int($0) }
-                ))
-                .keyboardType(.numberPad)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-
                 Button(action: {
                     viewModel.signUp()
                 }) {
