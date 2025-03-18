@@ -12,8 +12,8 @@ class AuthService {
     static let shared = AuthService()
     private let db = Firestore.firestore()
 
-    // MARK: - Sign Up Function
-    func signUp(email: String, password: String, firstName: String, lastName: String, calorieGoal: Int?, completion: @escaping (Bool, String?) -> Void) {
+    // MARK: - Sign Up Function (Without Nutrition Goals)
+    func signUp(email: String, password: String, firstName: String, lastName: String, completion: @escaping (Bool, String?) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
                 completion(false, error.localizedDescription)
@@ -25,51 +25,33 @@ class AuthService {
                 return
             }
 
-            // Default User Data with Embedded Goal
+            // Store only identity information at signup
             let userData: [String: Any] = [
                 "firstName": firstName,
                 "lastName": lastName,
                 "email": email,
-                "calorieGoal": calorieGoal ?? 2000,  // Default 2000 kcal
-                "carbPercentage": 50.0,
-                "proteinPercentage": 25.0,
-                "fatPercentage": 25.0,
-                "selectedPreset": "Balanced (50/25/25)"
+                "hasSetGoal": false  // Track if user has set their goal
             ]
 
-            // Store in Firestore
             self.db.collection("users").document(user.uid).setData(userData) { error in
                 completion(error == nil, error?.localizedDescription)
             }
         }
     }
 
-    // MARK: - Fetch User Nutrition Goals
-    func fetchUserGoal(completion: @escaping (NutritionGoal?) -> Void) {
+    // MARK: - Check if User Has a Nutrition Goal
+    func checkIfUserHasGoal(completion: @escaping (Bool) -> Void) {
         guard let userID = Auth.auth().currentUser?.uid else {
-            completion(nil)
+            completion(false)
             return
         }
 
         db.collection("users").document(userID).getDocument { snapshot, error in
-            guard let data = snapshot?.data(), error == nil else {
-                completion(nil)
-                return
+            if let data = snapshot?.data(), let hasSetGoal = data["hasSetGoal"] as? Bool {
+                completion(hasSetGoal)
+            } else {
+                completion(false)
             }
-
-            let goal = NutritionGoal(
-                calorieGoal: data["calorieGoal"] as? Int ?? 2000,
-                carbGrams: 0,
-                proteinGrams: 0,
-                fatGrams: 0,
-                carbPercentage: data["carbPercentage"] as? Double ?? 50.0,
-                proteinPercentage: data["proteinPercentage"] as? Double ?? 25.0,
-                fatPercentage: data["fatPercentage"] as? Double ?? 25.0,
-                isAutoCalculated: false,
-                selectedPreset: data["selectedPreset"] as? String ?? "Balanced (50/25/25)"
-            )
-
-            completion(goal)
         }
     }
 
@@ -85,7 +67,8 @@ class AuthService {
             "carbPercentage": goal.carbPercentage,
             "proteinPercentage": goal.proteinPercentage,
             "fatPercentage": goal.fatPercentage,
-            "selectedPreset": goal.selectedPreset
+            "selectedPreset": goal.selectedPreset,
+            "hasSetGoal": true  // Mark user as having set their goal
         ]
 
         db.collection("users").document(userID).updateData(goalData) { error in
