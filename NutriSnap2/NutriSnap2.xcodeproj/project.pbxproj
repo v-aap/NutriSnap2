@@ -45,7 +45,6 @@
 		C27F8E822D893DBD00BDCDE0 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C27F8E812D893DBD00BDCDE0 /* FirebaseFirestore */; };
 		C27F8E842D8941DC00BDCDE0 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E832D8941DC00BDCDE0 /* AuthService.swift */; };
 		C27F8E8D2D89445A00BDCDE0 /* FirestoneService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E8C2D89445A00BDCDE0 /* FirestoneService.swift */; };
-		C6A73D592D88BF160059AAD6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C6A73D582D88BF160059AAD6 /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,7 +111,6 @@
 				C27F8E782D8932A900BDCDE0 /* FirebaseAnalytics in Frameworks */,
 				C27F8E7E2D893DBD00BDCDE0 /* FirebaseCore in Frameworks */,
 				C27F8E7A2D8932A900BDCDE0 /* FirebaseAppCheck in Frameworks */,
-				C6A73D592D88BF160059AAD6 /* RealmSwift in Frameworks */,
 				C27F8E7C2D893DBD00BDCDE0 /* FirebaseAuth in Frameworks */,
 				C27F8E822D893DBD00BDCDE0 /* FirebaseFirestore in Frameworks */,
 			);
@@ -257,7 +255,6 @@
 			);
 			name = NutriSnap2;
 			packageProductDependencies = (
-				C6A73D582D88BF160059AAD6 /* RealmSwift */,
 				C27F8E772D8932A900BDCDE0 /* FirebaseAnalytics */,
 				C27F8E792D8932A900BDCDE0 /* FirebaseAppCheck */,
 				C27F8E7B2D893DBD00BDCDE0 /* FirebaseAuth */,
@@ -338,7 +335,6 @@
 			);
 			mainGroup = 18C2F8592D84AF0D0066CA1E;
 			packageReferences = (
-				C6A73D572D88BF160059AAD6 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				C27F8E762D8932A900BDCDE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 18C2F8632D84AF0D0066CA1E /* Products */;
@@ -744,14 +740,6 @@
 				minimumVersion = 11.10.0;
 			};
 		};
-		C6A73D572D88BF160059AAD6 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.42.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -784,11 +772,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C27F8E762D8932A900BDCDE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
-		};
-		C6A73D582D88BF160059AAD6 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C6A73D572D88BF160059AAD6 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
