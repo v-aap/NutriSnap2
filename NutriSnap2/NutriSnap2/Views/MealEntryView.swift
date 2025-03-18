@@ -99,6 +99,61 @@ struct MealEntryView: View {
     }
 }
 
+// MARK: - Custom Components
+
+// ✅ CustomTextField for entering meal names
+struct CustomTextField: View {
+    var placeholder: String
+    @Binding var text: String
+
+    var body: some View {
+        TextField(placeholder, text: $text)
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(8)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+            .padding(.horizontal)
+    }
+}
+
+// ✅ CustomNumberField for entering calorie/macronutrient values
+struct CustomNumberField: View {
+    var placeholder: String
+    @Binding var value: Int
+
+    var body: some View {
+        TextField(placeholder, value: $value, formatter: NumberFormatter())
+            .keyboardType(.numberPad)
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(8)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+            .padding(.horizontal)
+    }
+}
+
+// ✅ NutrientRow for displaying macro inputs
+struct NutrientRow: View {
+    var label: String
+    @Binding var value: Int
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.subheadline)
+            Spacer()
+            TextField("0", value: $value, formatter: NumberFormatter())
+                .keyboardType(.numberPad)
+                .frame(width: 50)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .multilineTextAlignment(.trailing)
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(8)
+    }
+}
+
 // MARK: - Preview (Fixed with `userID`)
 struct MealEntryView_Previews: PreviewProvider {
     static var previews: some View {
