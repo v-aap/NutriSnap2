@@ -47,6 +47,7 @@
 		C27F8E8D2D89445A00BDCDE0 /* FirestoneService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E8C2D89445A00BDCDE0 /* FirestoneService.swift */; };
 		C64290F82D8A1CBD006046C9 /* ValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290F72D8A1CBD006046C9 /* ValidationService.swift */; };
 		C64290FA2D8A1D31006046C9 /* ErrorHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290F92D8A1D31006046C9 /* ErrorHandlingService.swift */; };
+		C64290FC2D8A33B8006046C9 /* ReusableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290FB2D8A33B8006046C9 /* ReusableViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +105,7 @@
 		C27F8E8C2D89445A00BDCDE0 /* FirestoneService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoneService.swift; sourceTree = "<group>"; };
 		C64290F72D8A1CBD006046C9 /* ValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationService.swift; sourceTree = "<group>"; };
 		C64290F92D8A1D31006046C9 /* ErrorHandlingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandlingService.swift; sourceTree = "<group>"; };
+		C64290FB2D8A33B8006046C9 /* ReusableViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,6 +231,7 @@
 				18C2F8A82D84AF470066CA1E /* SignUpView.swift */,
 				18C2F8C12D84BD510066CA1E /* SplashScreenView.swift */,
 				18C2F8C32D84BE640066CA1E /* RootContainerView.swift */,
+				C64290FB2D8A33B8006046C9 /* ReusableViews.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C64290FC2D8A33B8006046C9 /* ReusableViews.swift in Sources */,
 				C21322242D8752480039FFC0 /* UserModel.swift in Sources */,
 				18C2F8B62D84AF470066CA1E /* ImagePicker.swift in Sources */,
 				C21322342D8754F00039FFC0 /* PieChartView.swift in Sources */,

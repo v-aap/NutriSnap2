@@ -56,4 +56,21 @@ class ValidationService {
         if !password.contains(where: { "!@#$%^&*()_+=-".contains($0) }) { return "Must contain at least one special character." }
         return "Strong password!"
     }
+    
+    // MARK: - Meal Type Validation
+    static func isValidMealType(_ mealType: String) -> Bool {
+        return MealType(rawValue: mealType) != nil
+    }
+
+    static func mealTypeValidationMessage(_ mealType: String) -> String? {
+        if mealType.isEmpty {
+            return "Meal type cannot be empty."
+        }
+        if !isValidMealType(mealType) {
+            return "Invalid meal type. Must be Breakfast, Lunch, Dinner, or Snack."
+        }
+        return nil
+    }
+
+    
 }

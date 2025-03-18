@@ -19,7 +19,7 @@ struct MealListView: View {
     private var filteredMeals: [MealEntry] {
         meals.filter { meal in
             Calendar.current.isDate(meal.date, inSameDayAs: selectedDate) &&
-            (selectedMealType == nil || meal.mealType == selectedMealType!)
+            (selectedMealType == nil || meal.mealType.rawValue == selectedMealType!)
         }
     }
 
@@ -140,7 +140,7 @@ struct MealListView: View {
                         protein: data["protein"] as? Int ?? 0,
                         fats: data["fats"] as? Int ?? 0,
                         isManualEntry: data["isManualEntry"] as? Bool ?? true,
-                        mealType: data["mealType"] as? String ?? "Unknown"
+                        mealType: MealType(rawValue: data["mealType"] as? String ?? "Unknown") ?? .breakfast
                     )
                 } ?? []
             }

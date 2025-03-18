@@ -6,6 +6,7 @@
 //
 
 import FirebaseFirestore
+import FirebaseAuth
 
 class FirestoreService {
     static let shared = FirestoreService()
@@ -98,67 +99,61 @@ class FirestoreService {
         }
     }
     
-    // New: Save Meal function
-    func saveMeal(_ meal: MealEntry, completion: @escaping (Bool) -> Void) {
-        let mealData: [String: Any] = [
-            "userID": meal.userID,
-            "date": meal.date,
-            "foodName": meal.foodName,
-            "calories": meal.calories,
-            "carbs": meal.carbs,
-            "protein": meal.protein,
-            "fats": meal.fats,
-            "isManualEntry": meal.isManualEntry,
-            "mealType": meal.mealType,
-            "photoURL": meal.photoURL ?? ""
-        ]
-        
-        db.collection("meals").addDocument(data: mealData) { error in
+    // MARK: Save Meal Function
+    func saveMeal(meal: MealEntry, completion: @escaping (Bool, String?) -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            completion(false, "User not authenticated.")
+            return
+        }
+
+        let mealData = meal.toFirestore()
+
+        db.collection("meals").document(meal.id.uuidString).setData(mealData) { error in
             if let error = error {
-                print("Error adding meal: \(error.localizedDescription)")
-                completion(false)
+                completion(false, error.localizedDescription)
             } else {
-                completion(true)
+                completion(true, nil)
             }
         }
     }
 
+
    
-//    // MARK: - Fetch Meals
-//    func fetchMeals(completion: @escaping ([MealEntry]) -> Void) {
-//        guard let userID = AuthService.shared.getCurrentUserID() else {
-//            completion([])
-//            return
-//        }
-//
-//        db.collection("meals")
-//            .whereField("userID", isEqualTo: userID)
-//            .order(by: "date", descending: true)
-//            .getDocuments { snapshot, error in
-//                if let error = error {
-//                    print("❌ Error fetching meals: \(error.localizedDescription)")
-//                    completion([])
-//                    return
-//                }
-//
-//                let meals = snapshot?.documents.compactMap { doc -> MealEntry? in
-//                    let data = doc.data()
-//                    return MealEntry.fromFirestore(id: doc.documentID, data: data)
-//                } ?? []
-//                completion(meals)
-//            }
-//    }
-//
+    // MARK: - Fetch Meals
+    func fetchMeals(completion: @escaping ([MealEntry]) -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            completion([])
+            return
+        }
+
+        db.collection("meals")
+            .whereField("userID", isEqualTo: userID)
+            .order(by: "date", descending: true)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("❌ Error fetching meals: \(error.localizedDescription)")
+                    completion([])
+                    return
+                }
+
+                let meals = snapshot?.documents.compactMap { doc -> MealEntry? in
+                    let data = doc.data()
+                    return MealEntry.fromFirestore(id: doc.documentID, data: data)
+                } ?? []
+                completion(meals)
+            }
+    }
+
 //    // MARK: - Delete Meal Entry
-//    func deleteMealEntry(mealID: String, completion: @escaping (Bool) -> Void) {
-//        db.collection("meals").document(mealID).delete { error in
-//            if let error = error {
-//                print("❌ Error deleting meal: \(error.localizedDescription)")
-//                completion(false)
-//            } else {
-//                print("✅ Meal deleted successfully.")
-//                completion(true)
-//            }
-//        }
-//    }
+    func deleteMealEntry(mealID: String, completion: @escaping (Bool) -> Void) {
+        db.collection("meals").document(mealID).delete { error in
+            if let error = error {
+                print("❌ Error deleting meal: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                print("✅ Meal deleted successfully.")
+                completion(true)
+            }
+        }
+    }
 }

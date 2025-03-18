@@ -83,7 +83,7 @@ struct LogView: View {
                     protein: 0,
                     fats: 0,
                     isManualEntry: true,
-                    mealType: ""
+                    mealType: .breakfast
                 ))
             } else {
                 Text("Error: No user logged in") // Fallback in case user is not logged in

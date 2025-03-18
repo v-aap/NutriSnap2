@@ -51,7 +51,7 @@ struct MealCardView: View {
                 if showType || showDate {
                     HStack {
                         if showType {
-                            Text("🍽 \(meal.mealType)").font(.footnote).foregroundColor(.gray)
+                            Text("🍽 \(meal.mealType.rawValue)").font(.footnote).foregroundColor(.gray)
                         }
                         if showDate {
                             Text("📅 \(meal.date, style: .date)").font(.footnote).foregroundColor(.gray)
@@ -83,7 +83,7 @@ struct MealCardView_Previews: PreviewProvider {
                 protein: 30,
                 fats: 10,
                 isManualEntry: true,
-                mealType: "Breakfast"
+                mealType: .breakfast
             ),
             showDate: true,
             showType: true
