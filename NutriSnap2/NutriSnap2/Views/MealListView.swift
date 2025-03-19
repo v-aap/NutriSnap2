@@ -25,16 +25,18 @@ struct MealListView: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            // ✅ Date Header with Buttons & Clickable Date
+            
+            // Date Header with Buttons & Clickable Date
             HStack {
-                Button(action: { selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate)! }) {
+                Button(action: {
+                    selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
+                }) {
                     Image(systemName: "chevron.left")
                         .foregroundColor(.blue)
                 }
                 
                 Spacer()
                 
-                // ✅ Tap to open DatePicker
                 Text(selectedDate, formatter: dateFormatter)
                     .font(.title3)
                     .bold()
@@ -44,15 +46,17 @@ struct MealListView: View {
 
                 Spacer()
                 
-                Button(action: { selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)! }) {
+                Button(action: {
+                    selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+                }) {
                     Image(systemName: "chevron.right")
                         .foregroundColor(.blue)
                 }
             }
             .padding(.horizontal)
-            .padding(.top, 15)
+            // Removed the old .padding(.top, 15) to reduce extra space under the nav bar
 
-            // ✅ Meal Type Filter (Segmented Control)
+            // Meal Type Filter (Segmented Control)
             Picker("Meal Type", selection: $selectedMealType) {
                 Text("All").tag(nil as String?)
                 Text("Breakfast").tag("Breakfast" as String?)
@@ -63,7 +67,7 @@ struct MealListView: View {
             .pickerStyle(SegmentedPickerStyle())
             .padding()
 
-            // ✅ Meal List (Takes Full Space)
+            // Meal List
             ScrollView {
                 VStack(spacing: 12) {
                     ForEach(filteredMeals, id: \.id) { meal in
@@ -76,13 +80,8 @@ struct MealListView: View {
                         .padding(.horizontal)
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .frame(maxHeight: .infinity, alignment: .top)
-
-        // ✅ Date Picker as Sheet
         .sheet(isPresented: $showDatePicker) {
             VStack {
                 Text("Select a Date")
@@ -113,7 +112,6 @@ struct MealListView: View {
         }
     }
 
-    // ✅ Fetch Meals from Firestore
     private func fetchMeals() {
         guard let userID = Auth.auth().currentUser?.uid else {
             print("❌ Error: No user logged in.")
@@ -147,9 +145,12 @@ struct MealListView: View {
     }
 }
 
-// MARK: - Preview (Fixed with `userID`)
 struct MealListView_Previews: PreviewProvider {
     static var previews: some View {
-        MealListView()
+        NavigationView {
+            MealListView()
+                .navigationTitle("Meals")
+                .navigationBarTitleDisplayMode(.inline)
+        }
     }
 }

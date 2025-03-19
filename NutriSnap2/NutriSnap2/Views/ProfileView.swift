@@ -1,84 +1,83 @@
 import SwiftUI
 
 struct ProfileView: View {
-    // MARK: - State Variables
     @State private var user: UserModel? = nil
     @State private var isLoggedOut = false
     @State private var notificationsEnabled: Bool = true
 
     var body: some View {
-        NavigationView {
-            VStack {
-                if let user = user {
-                    // MARK: - Profile Picture & Name
-                    VStack {
-                        Image("profile_placeholder")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 120, height: 120)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.accentColor, lineWidth: 3)
-                            )
-                            .padding(.top, 40)
+        VStack {
+            if let user = user {
+                // Profile Header
+                VStack {
+                    Image("profile_placeholder")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 120, height: 120)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.accentColor, lineWidth: 3)
+                        )
+                        // Reduced top padding from 40 to 20
+                        .padding(.top, 20)
 
-                        Text("\(user.firstName) \(user.lastName)")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
-                            .foregroundColor(.primary)
-                            .padding(.top, 8)
-                    }
-
-                    // MARK: - Settings List
-                    List {
-                        // MARK: - Personal Information
-                        NavigationLink(destination: EditPersonalInfoView(
-                            firstName: .constant(user.firstName),
-                            lastName: .constant(user.lastName),
-                            email: .constant(user.email))) {
-                            SettingsRow(icon: "person.fill", color: .blue, title: "Personal Information")
-                        }
-
-                        // MARK: - Calorie Goal (Clickable)
-                        NavigationLink(destination: EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal))) {
-                            SettingsRow(icon: "flame.fill", color: .orange, title: "Calorie Goal: \(user.calorieGoal) kcal/day")
-                        }
-
-                        // MARK: - Notifications Toggle
-                        Toggle(isOn: $notificationsEnabled) {
-                            SettingsRow(icon: "bell.fill", color: .green, title: "Notifications")
-                        }
-
-                        // MARK: - Logout Button
-                        Section {
-                            Button(action: logout) {
-                                SettingsRow(icon: "arrow.right.circle.fill", color: .red, title: "Log Out", isDestructive: true)
-                            }
-                        }
-                    }
-                    .listStyle(InsetGroupedListStyle())
-                } else {
-                    // MARK: - Loading State
-                    VStack {
-                        ProgressView()
-                        Text("Loading profile...")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                    }
-                    .onAppear(perform: fetchUserData)
+                    Text("\(user.firstName) \(user.lastName)")
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                        .padding(.top, 8)
                 }
 
-                Spacer()
+                // Settings List
+                List {
+                    // Personal Info
+                    NavigationLink(destination: EditPersonalInfoView(
+                        firstName: .constant(user.firstName),
+                        lastName: .constant(user.lastName),
+                        email: .constant(user.email)
+                    )) {
+                        SettingsRow(icon: "person.fill", color: .blue, title: "Personal Information")
+                    }
+
+                    // Calorie Goal
+                    NavigationLink(destination: EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal))) {
+                        SettingsRow(icon: "flame.fill", color: .orange, title: "Calorie Goal: \(user.calorieGoal) kcal/day")
+                    }
+
+                    // Notifications
+                    Toggle(isOn: $notificationsEnabled) {
+                        SettingsRow(icon: "bell.fill", color: .green, title: "Notifications")
+                    }
+
+                    // Logout
+                    Section {
+                        Button(action: logout) {
+                            SettingsRow(icon: "arrow.right.circle.fill", color: .red, title: "Log Out", isDestructive: true)
+                        }
+                    }
+                }
+                .listStyle(InsetGroupedListStyle())
+
+            } else {
+                // Loading State
+                VStack {
+                    ProgressView()
+                    Text("Loading profile...")
+                        .font(.headline)
+                        .foregroundColor(.gray)
+                }
+                .onAppear(perform: fetchUserData)
             }
-            .navigationTitle("Profile")
-            .onAppear(perform: fetchUserData)
-            .fullScreenCover(isPresented: $isLoggedOut) {
-                SignInView()
-            }
+
+            Spacer()
+        }
+        .onAppear(perform: fetchUserData)
+        .fullScreenCover(isPresented: $isLoggedOut) {
+            SignInView()
         }
     }
 
-    // MARK: - Fetch User Data
+    // Fetch User Data
     private func fetchUserData() {
         FirestoreService.shared.fetchUserData { fetchedUser in
             DispatchQueue.main.async {
@@ -87,7 +86,7 @@ struct ProfileView: View {
         }
     }
 
-    // MARK: - Logout Function
+    // Logout
     private func logout() {
         AuthService.shared.signOut { success, error in
             DispatchQueue.main.async {
@@ -101,7 +100,7 @@ struct ProfileView: View {
     }
 }
 
-// MARK: - Reusable Settings Row View
+// MARK: - SettingsRow
 struct SettingsRow: View {
     let icon: String
     let color: Color
@@ -123,6 +122,8 @@ struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             ProfileView()
+                .navigationTitle("Profile")
+                .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

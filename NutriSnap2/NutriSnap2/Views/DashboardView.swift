@@ -2,29 +2,24 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var selectedDate: Date = Date()
-    @State private var userName: String = "User" // Placeholder for user's name
+    @State private var userName: String = "User"
     
-    // Example daily goal and calories consumed (replace with dynamic data as needed)
+    // Example daily goal and calories consumed
     let dailyGoal: Int = 1200
     let breakfastCalories: Int = 50
     let lunchCalories: Int = 300
     let dinnerCalories: Int = 250
     let snackCalories: Int = 100
     
-    // Computed properties
     var totalConsumed: Int {
         breakfastCalories + lunchCalories + dinnerCalories + snackCalories
     }
-    
     var remaining: Int {
         dailyGoal - totalConsumed
     }
-    
     var progress: Double {
-        let ratio = Double(totalConsumed) / Double(dailyGoal)
-        return min(ratio, 1.0)
+        Double(totalConsumed) / Double(dailyGoal)
     }
-    
     var ringColor: Color {
         remaining >= 0 ? .green : .red
     }
@@ -37,17 +32,20 @@ struct DashboardView: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            // Welcome Message
+            
+            // Custom top header
             HStack {
                 Text("Welcome, \(userName)")
                     .font(.title2)
                     .fontWeight(.bold)
                 Spacer()
             }
+            // If the top padding is too large on a real device with a notch,
+            // reduce or remove .padding(.top, 20)
             .padding(.horizontal)
-            .padding(.top, 20) // Adjusted padding to ensure visibility
+            .padding(.top, 20)
             
-            // Date Navigation
+            // Date navigation
             HStack {
                 Button(action: {
                     if let newDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) {
@@ -77,11 +75,10 @@ struct DashboardView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.top, 10)
             
-            // Daily Progress Ring
+            // Daily progress ring
             ZStack {
-                DailyProgressRing(progress: progress, ringColor: ringColor)
+                DailyProgressRing(progress: min(progress, 1.0), ringColor: ringColor)
                 VStack {
                     if remaining >= 0 {
                         Text("\(remaining)")
@@ -98,9 +95,8 @@ struct DashboardView: View {
                     }
                 }
             }
-            .padding(.top, 8)
             
-            // Macros Section
+            // Macros
             HStack(spacing: 40) {
                 VStack {
                     Text("Carbs")
@@ -109,7 +105,6 @@ struct DashboardView: View {
                     Text("50/200 g")
                         .font(.headline)
                 }
-                
                 VStack {
                     Text("Protein")
                         .font(.subheadline)
@@ -117,7 +112,6 @@ struct DashboardView: View {
                     Text("60/150 g")
                         .font(.headline)
                 }
-                
                 VStack {
                     Text("Fats")
                         .font(.subheadline)
@@ -128,7 +122,7 @@ struct DashboardView: View {
             }
             .padding(.vertical)
             
-            // Sample Meals List
+            // Example meals
             VStack(spacing: 16) {
                 MealRowView(iconName: "sunrise.fill", mealName: "Breakfast", currentCalories: breakfastCalories, totalCalories: 500)
                 MealRowView(iconName: "sun.max.fill", mealName: "Lunch", currentCalories: lunchCalories, totalCalories: 600)
@@ -139,9 +133,7 @@ struct DashboardView: View {
             
             Spacer()
         }
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
-        .padding(.top, 10) // Adjusted to prevent content from being cut off
+        // Parent does NOT wrap this in a NavigationView (RootContainerView uses none for Dashboard).
     }
 }
 
@@ -149,6 +141,5 @@ struct DashboardView: View {
 struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
         DashboardView()
-            .previewDevice("iPhone 14 Plus")
     }
 }
