@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var selectedDate: Date = Date()
+    @State private var userName: String = "User" // Placeholder for user's name
     
     // Example daily goal and calories consumed (replace with dynamic data as needed)
     let dailyGoal: Int = 1200
@@ -36,6 +37,16 @@ struct DashboardView: View {
     
     var body: some View {
         VStack(spacing: 16) {
+            // Welcome Message
+            HStack {
+                Text("Welcome, \(userName)")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                Spacer()
+            }
+            .padding(.horizontal)
+            .padding(.top, 20) // Adjusted padding to ensure visibility
+            
             // Date Navigation
             HStack {
                 Button(action: {
@@ -66,7 +77,7 @@ struct DashboardView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.top, 16)
+            .padding(.top, 10)
             
             // Daily Progress Ring
             ZStack {
@@ -89,7 +100,7 @@ struct DashboardView: View {
             }
             .padding(.top, 8)
             
-            // Macros Section (Placeholder data)
+            // Macros Section
             HStack(spacing: 40) {
                 VStack {
                     Text("Carbs")
@@ -117,7 +128,7 @@ struct DashboardView: View {
             }
             .padding(.vertical)
             
-            // Sample Meals List (Reusable MealRowView instances)
+            // Sample Meals List
             VStack(spacing: 16) {
                 MealRowView(iconName: "sunrise.fill", mealName: "Breakfast", currentCalories: breakfastCalories, totalCalories: 500)
                 MealRowView(iconName: "sun.max.fill", mealName: "Lunch", currentCalories: lunchCalories, totalCalories: 600)
@@ -130,78 +141,7 @@ struct DashboardView: View {
         }
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
-    }
-}
-
-// MARK: - DailyProgressRing
-struct DailyProgressRing: View {
-    let progress: Double  // Expected range: 0.0 to 1.0
-    let ringColor: Color
-    var size: CGFloat = 120
-    var lineWidth: CGFloat = 10
-    
-    var body: some View {
-        ZStack {
-            // Background circle
-            Circle()
-                .stroke(Color.gray.opacity(0.3), lineWidth: lineWidth)
-                .frame(width: size, height: size)
-            // Foreground progress ring
-            Circle()
-                .trim(from: 0, to: CGFloat(progress))
-                .stroke(ringColor, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-                .frame(width: size, height: size)
-        }
-    }
-}
-
-// MARK: - MealRowView (Reusable for Meal Rows)
-struct MealRowView: View {
-    let iconName: String
-    let mealName: String
-    let currentCalories: Int
-    let totalCalories: Int
-    
-    // Calculate progress for the meal's consumption
-    var progress: Double {
-        guard totalCalories > 0 else { return 0 }
-        return min(Double(currentCalories) / Double(totalCalories), 1.0)
-    }
-    
-    var body: some View {
-        HStack {
-            Image(systemName: iconName)
-                .font(.title2)
-                .foregroundColor(.green)
-            Text(mealName)
-                .font(.headline)
-            Spacer()
-            Text("\(currentCalories)/\(totalCalories) Cal")
-                .font(.subheadline)
-            ProgressRing(progress: progress)
-        }
-        .padding(.vertical, 4)
-    }
-}
-
-// MARK: - ProgressRing (Reusable for Meal Rows)
-struct ProgressRing: View {
-    let progress: Double  // Expected range: 0.0 to 1.0
-    var lineWidth: CGFloat = 4
-    var size: CGFloat = 24
-    
-    var body: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.gray.opacity(0.3), lineWidth: lineWidth)
-                .frame(width: size, height: size)
-            Circle()
-                .trim(from: 0, to: CGFloat(progress))
-                .stroke(Color.green, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-                .frame(width: size, height: size)
-        }
+        .padding(.top, 10) // Adjusted to prevent content from being cut off
     }
 }
 
