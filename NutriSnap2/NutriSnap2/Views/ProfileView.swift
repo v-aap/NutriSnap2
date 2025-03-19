@@ -101,23 +101,6 @@ struct ProfileView: View {
     }
 }
 
-// MARK: - Reusable Settings Row View
-struct SettingsRow: View {
-    let icon: String
-    let color: Color
-    let title: String
-    var isDestructive: Bool = false
-
-    var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(color)
-            Text(title)
-                .foregroundColor(isDestructive ? .red : .primary)
-        }
-    }
-}
-
 // MARK: - Preview
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {

@@ -44,10 +44,11 @@
 		C27F8E802D893DBD00BDCDE0 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = C27F8E7F2D893DBD00BDCDE0 /* FirebaseDatabase */; };
 		C27F8E822D893DBD00BDCDE0 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C27F8E812D893DBD00BDCDE0 /* FirebaseFirestore */; };
 		C27F8E842D8941DC00BDCDE0 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E832D8941DC00BDCDE0 /* AuthService.swift */; };
-		C27F8E8D2D89445A00BDCDE0 /* FirestoneService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E8C2D89445A00BDCDE0 /* FirestoneService.swift */; };
+		C27F8E8D2D89445A00BDCDE0 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E8C2D89445A00BDCDE0 /* FirestoreService.swift */; };
 		C64290F82D8A1CBD006046C9 /* ValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290F72D8A1CBD006046C9 /* ValidationService.swift */; };
 		C64290FA2D8A1D31006046C9 /* ErrorHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290F92D8A1D31006046C9 /* ErrorHandlingService.swift */; };
 		C64290FC2D8A33B8006046C9 /* ReusableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290FB2D8A33B8006046C9 /* ReusableViews.swift */; };
+		C64290FE2D8A5293006046C9 /* NutritionAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290FD2D8A5293006046C9 /* NutritionAnalysisService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,10 +103,11 @@
 		C21322332D8754F00039FFC0 /* PieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		C27F8E742D892EA800BDCDE0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		C27F8E832D8941DC00BDCDE0 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
-		C27F8E8C2D89445A00BDCDE0 /* FirestoneService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoneService.swift; sourceTree = "<group>"; };
+		C27F8E8C2D89445A00BDCDE0 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		C64290F72D8A1CBD006046C9 /* ValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationService.swift; sourceTree = "<group>"; };
 		C64290F92D8A1D31006046C9 /* ErrorHandlingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandlingService.swift; sourceTree = "<group>"; };
 		C64290FB2D8A33B8006046C9 /* ReusableViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableViews.swift; sourceTree = "<group>"; };
+		C64290FD2D8A5293006046C9 /* NutritionAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionAnalysisService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -240,9 +242,10 @@
 			isa = PBXGroup;
 			children = (
 				C27F8E832D8941DC00BDCDE0 /* AuthService.swift */,
-				C27F8E8C2D89445A00BDCDE0 /* FirestoneService.swift */,
+				C27F8E8C2D89445A00BDCDE0 /* FirestoreService.swift */,
 				C64290F72D8A1CBD006046C9 /* ValidationService.swift */,
 				C64290F92D8A1D31006046C9 /* ErrorHandlingService.swift */,
+				C64290FD2D8A5293006046C9 /* NutritionAnalysisService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -408,7 +411,8 @@
 				18C2F8B52D84AF470066CA1E /* ChangePasswordView.swift in Sources */,
 				18C2F8AE2D84AF470066CA1E /* SignInViewModel.swift in Sources */,
 				18C2F8AD2D84AF470066CA1E /* MealEntryModel.swift in Sources */,
-				C27F8E8D2D89445A00BDCDE0 /* FirestoneService.swift in Sources */,
+				C27F8E8D2D89445A00BDCDE0 /* FirestoreService.swift in Sources */,
+				C64290FE2D8A5293006046C9 /* NutritionAnalysisService.swift in Sources */,
 				18C2F8AC2D84AF470066CA1E /* SignUpViewModel.swift in Sources */,
 				18C2F8C22D84BD510066CA1E /* SplashScreenView.swift in Sources */,
 				18C2F8BF2D84AF470066CA1E /* SignUpView.swift in Sources */,
