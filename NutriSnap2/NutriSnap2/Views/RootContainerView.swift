@@ -5,36 +5,41 @@ struct RootContainerView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            
             TabView(selection: $selectedTab) {
-                NavigationView {
-                    DashboardView()
-                        // Keep your own custom nav bar design inside DashboardView
-                        .navigationBarHidden(true)
-                }
-                .tag(0)
                 
+                // 1) Dashboard — no NavigationView (custom header inside DashboardView)
+                DashboardView()
+                    .tag(0)
+                
+                // 2) Log — standard nav bar
                 NavigationView {
                     LogView()
-                        .navigationBarHidden(true)
+                        .navigationTitle("Log")
+                        .navigationBarTitleDisplayMode(.inline)
                 }
                 .tag(1)
                 
+                // 3) Meals — standard nav bar
                 NavigationView {
                     MealListView()
-                        .navigationBarHidden(true)
+                        .navigationTitle("Meals")
+                        .navigationBarTitleDisplayMode(.inline)
                 }
                 .tag(2)
                 
+                // 4) Profile — standard nav bar
                 NavigationView {
                     ProfileView()
-                        .navigationBarHidden(true)
+                        .navigationTitle("Profile")
+                        .navigationBarTitleDisplayMode(.inline)
                 }
                 .tag(3)
             }
-            // Only ignore the bottom safe area (so the tab bar sits at the bottom)
+            // Only ignore bottom safe area so the tab bar is flush
             .edgesIgnoringSafeArea(.bottom)
             
-            // Custom Bottom Navigation Bar
+            // Custom Bottom Nav Bar
             VStack(spacing: 0) {
                 Rectangle()
                     .fill(Color(UIColor.systemGroupedBackground))
@@ -85,8 +90,6 @@ struct RootContainerView: View {
                 .background(Color(UIColor.systemGroupedBackground))
             }
         }
-        // No .edgesIgnoringSafeArea(.top) or .all here,
-        // so your top UI won't get pushed behind the notch.
     }
 }
 
