@@ -5,11 +5,11 @@ struct RootContainerView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Use a TabView so that each view preserves its state.
             TabView(selection: $selectedTab) {
                 NavigationView {
                     DashboardView()
-                        .navigationBarHidden(true) // ✅ Prevents unwanted space
+                        // Keep your own custom nav bar design inside DashboardView
+                        .navigationBarHidden(true)
                 }
                 .tag(0)
                 
@@ -31,11 +31,11 @@ struct RootContainerView: View {
                 }
                 .tag(3)
             }
-            .tabViewStyle(DefaultTabViewStyle())
+            // Only ignore the bottom safe area (so the tab bar sits at the bottom)
+            .edgesIgnoringSafeArea(.bottom)
             
             // Custom Bottom Navigation Bar
             VStack(spacing: 0) {
-                // ✅ Background-colored separator
                 Rectangle()
                     .fill(Color(UIColor.systemGroupedBackground))
                     .frame(height: 1)
@@ -85,12 +85,13 @@ struct RootContainerView: View {
                 .background(Color(UIColor.systemGroupedBackground))
             }
         }
-        .edgesIgnoringSafeArea(.top)
+        // No .edgesIgnoringSafeArea(.top) or .all here,
+        // so your top UI won't get pushed behind the notch.
     }
-    
-    struct RootContainerView_Previews: PreviewProvider {
-        static var previews: some View {
-            RootContainerView()
-        }
+}
+
+struct RootContainerView_Previews: PreviewProvider {
+    static var previews: some View {
+        RootContainerView()
     }
 }
