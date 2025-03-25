@@ -80,15 +80,9 @@ class NutritionAnalysisService {
                 let totalProtein = meals.reduce(0) { $0 + $1.protein }
                 let totalFats = meals.reduce(0) { $0 + $1.fats }
 
-                // Calculate meal-based calorie tracking
-                var mealCalories: [MealType: Int] = [
-                    .breakfast: 0,
-                    .lunch: 0,
-                    .dinner: 0,
-                    .snack: 0
-                ]
-
-                meals.forEach { meal in
+                // Group meals by MealType and sum calories
+                var mealCalories: [MealType: Int] = [:]
+                for meal in meals {
                     mealCalories[meal.mealType, default: 0] += meal.calories
                 }
 
@@ -98,32 +92,30 @@ class NutritionAnalysisService {
                 print("  ✅ Protein: \(totalProtein)g (\(goals.proteinPercentage)%)")
                 print("  ✅ Fats: \(totalFats)g (\(goals.fatPercentage)%)")
 
-                print("📌 Calories per meal:")
-                for (mealType, calories) in mealCalories {
-                    print("  ✅ \(mealType.rawValue): \(calories) Cal")
-                }
-
                 completion(totalCalories, goals.calorieGoal, totalCarbs, totalProtein, totalFats, mealCalories)
             }
         }
     }
 
-    // MARK: - Calculate Meal-Specific Calorie Goals
-    func calculateMealGoals(for user: UserModel) -> [MealType: Int] {
-        let totalCalories = user.calorieGoal
-
-        let distribution: [MealType: Double] = [
-            .breakfast: 0.25, // 25% of daily calories
-            .lunch: 0.35,     // 35% of daily calories
-            .dinner: 0.30,    // 30% of daily calories
-            .snack: 0.10      // 10% of daily calories
-        ]
-
-        var mealGoals: [MealType: Int] = [:]
-        for (meal, percentage) in distribution {
-            mealGoals[meal] = Int(Double(totalCalories) * percentage)
+    // MARK: - Calculate Individual Meal Goal
+    func calculateMealGoal(for type: MealType, user: UserModel) -> Int {
+        let percentage: Double
+        switch type {
+        case .breakfast: percentage = user.breakfastPercentage
+        case .lunch: percentage = user.lunchPercentage
+        case .dinner: percentage = user.dinnerPercentage
+        case .snack: percentage = user.snackPercentage
         }
+        return Int(Double(user.calorieGoal) * (percentage / 100.0))
+    }
 
-        return mealGoals
+    // Optional: Get all meal type goals
+    func calculateAllMealGoals(for user: UserModel) -> [MealType: Int] {
+        return [
+            .breakfast: calculateMealGoal(for: .breakfast, user: user),
+            .lunch: calculateMealGoal(for: .lunch, user: user),
+            .dinner: calculateMealGoal(for: .dinner, user: user),
+            .snack: calculateMealGoal(for: .snack, user: user)
+        ]
     }
 }

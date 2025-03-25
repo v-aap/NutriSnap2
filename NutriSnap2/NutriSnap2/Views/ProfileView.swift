@@ -40,9 +40,19 @@ struct ProfileView: View {
                         }
 
                         // MARK: - Calorie Goal (Clickable)
-                        NavigationLink(destination: EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal))) {
+                        NavigationLink(destination: EditCalorieGoalView(user: Binding(get: {
+                            self.user ?? UserModel(
+                                id: UUID().uuidString,
+                                firstName: "",
+                                lastName: "",
+                                email: ""
+                            )
+                        }, set: { newUser in
+                            self.user = newUser
+                        }))) {
                             SettingsRow(icon: "flame.fill", color: .orange, title: "Calorie Goal: \(user.calorieGoal) kcal/day")
                         }
+
 
                         // MARK: - Notifications Toggle
                         Toggle(isOn: $notificationsEnabled) {

@@ -3,32 +3,15 @@ import FirebaseAuth
 
 struct DashboardView: View {
     @State private var selectedDate: Date = Date()
-    @State private var user: UserModel? = nil  // Stores fetched user data
-
-    // Example daily goal and calories consumed (replace with dynamic data as needed)
-    let dailyGoal: Int = 1200
-    let breakfastCalories: Int = 50
-    let lunchCalories: Int = 300
-    let dinnerCalories: Int = 250
-    let snackCalories: Int = 100
-
-    // Computed properties
-    var totalConsumed: Int {
-        breakfastCalories + lunchCalories + dinnerCalories + snackCalories
-    }
-
-    var remaining: Int {
-        dailyGoal - totalConsumed
-    }
-
-    var progress: Double {
-        let ratio = Double(totalConsumed) / Double(dailyGoal)
-        return min(ratio, 1.0)
-    }
-
-    var ringColor: Color {
-        remaining >= 0 ? .green : .red
-    }
+    @State private var user: UserModel? = nil
+    @State private var totalCalories: Int = 0
+    @State private var calorieGoal: Int = 0
+    @State private var totalCarbs: Int = 0
+    @State private var totalProtein: Int = 0
+    @State private var totalFats: Int = 0
+    @State private var mealCalories: [MealType: Int] = [:]
+    @State private var showGoalSetupAlert = false
+    @State private var animatedProgress: Double = 0.0
 
     var formattedDate: String {
         let formatter = DateFormatter()
@@ -37,120 +20,164 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
-            // Welcome Message
-            HStack {
-                Text("Welcome, \(user?.firstName ?? "User")") // ✅ Handles nil case properly
-                    .font(.title2)
-                    .fontWeight(.bold)
-                Spacer()
-            }
-            .padding(.horizontal)
-            .padding(.top, 10)
-            .onAppear {
-                fetchUserData()
-            }
-
-            // Date Navigation
-            HStack {
-                Button(action: {
-                    if let newDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) {
-                        selectedDate = newDate
-                    }
-                }) {
-                    Image(systemName: "chevron.left")
-                        .font(.title)
-                        .foregroundColor(.blue)
-                }
-
-                Spacer()
-
-                Text(formattedDate)
-                    .font(.headline)
-
-                Spacer()
-
-                Button(action: {
-                    if let newDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) {
-                        selectedDate = newDate
-                    }
-                }) {
-                    Image(systemName: "chevron.right")
-                        .font(.title)
-                        .foregroundColor(.blue)
-                }
-            }
-            .padding(.horizontal)
-
-            // Daily Progress Ring
-            ZStack {
-                DailyProgressRing(progress: progress, ringColor: ringColor)
-                VStack {
-                    if remaining >= 0 {
-                        Text("\(remaining)")
-                            .font(.title)
-                            .fontWeight(.bold)
-                        Text("Remaining")
-                            .font(.subheadline)
-                    } else {
-                        Text("\(abs(remaining))")
-                            .font(.title)
-                            .fontWeight(.bold)
-                        Text("Over")
-                            .font(.subheadline)
-                    }
-                }
-            }
-
-            // Macros Section
-            HStack(spacing: 40) {
-                VStack {
-                    Text("Carbs")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                    Text("50/200 g")
-                        .font(.headline)
-                }
-
-                VStack {
-                    Text("Protein")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                    Text("60/150 g")
-                        .font(.headline)
-                }
-
-                VStack {
-                    Text("Fats")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                    Text("30/70 g")
-                        .font(.headline)
-                }
-            }
-            .padding(.vertical)
-
-            // Sample Meals List
+        if let user = user {
             VStack(spacing: 16) {
-                MealRowView(iconName: "sunrise.fill", mealName: "Breakfast", currentCalories: breakfastCalories, totalCalories: 500)
-                MealRowView(iconName: "sun.max.fill", mealName: "Lunch", currentCalories: lunchCalories, totalCalories: 600)
-                MealRowView(iconName: "moon.stars.fill", mealName: "Dinner", currentCalories: dinnerCalories, totalCalories: 700)
-                MealRowView(iconName: "takeoutbag.and.cup.and.straw.fill", mealName: "Snacks", currentCalories: snackCalories, totalCalories: 300)
-            }
-            .padding(.horizontal)
+                // Welcome Message
+                HStack {
+                    Text("Welcome, \(user.firstName)")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top, 10)
 
-            Spacer()
+                // Date Navigation
+                HStack {
+                    Button(action: {
+                        if let newDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) {
+                            selectedDate = newDate
+                            analyzeNutrition()
+                        }
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title)
+                            .foregroundColor(.blue)
+                    }
+
+                    Spacer()
+
+                    Text(formattedDate)
+                        .font(.headline)
+
+                    Spacer()
+
+                    Button(action: {
+                        if let newDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) {
+                            selectedDate = newDate
+                            analyzeNutrition()
+                        }
+                    }) {
+                        Image(systemName: "chevron.right")
+                            .font(.title)
+                            .foregroundColor(.blue)
+                    }
+                }
+                .padding(.horizontal)
+
+                // Daily Progress Ring
+                ZStack {
+                    DailyProgressRing(progress: animatedProgress, ringColor: totalCalories <= calorieGoal ? .green : .red)
+                    VStack {
+                        if totalCalories <= calorieGoal {
+                            Text("\(calorieGoal - totalCalories)")
+                                .font(.title)
+                                .fontWeight(.bold)
+                            Text("Remaining")
+                                .font(.subheadline)
+                        } else {
+                            Text("\(totalCalories - calorieGoal)")
+                                .font(.title)
+                                .fontWeight(.bold)
+                            Text("Over")
+                                .font(.subheadline)
+                        }
+                    }
+                }
+
+                // Macros Section
+                HStack(spacing: 40) {
+                    VStack {
+                        Text("Carbs")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        Text("\(totalCarbs) g")
+                            .font(.headline)
+                    }
+
+                    VStack {
+                        Text("Protein")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        Text("\(totalProtein) g")
+                            .font(.headline)
+                    }
+
+                    VStack {
+                        Text("Fats")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        Text("\(totalFats) g")
+                            .font(.headline)
+                    }
+                }
+                .padding(.vertical)
+
+                // Meal Progress Views
+                VStack(spacing: 16) {
+                    MealRowView(iconName: "sunrise.fill", mealName: "Breakfast", currentCalories: mealCalories[.breakfast] ?? 0, totalCalories: NutritionAnalysisService.shared.calculateMealGoal(for: .breakfast, user: user))
+                    MealRowView(iconName: "sun.max.fill", mealName: "Lunch", currentCalories: mealCalories[.lunch] ?? 0, totalCalories: NutritionAnalysisService.shared.calculateMealGoal(for: .lunch, user: user))
+                    MealRowView(iconName: "moon.stars.fill", mealName: "Dinner", currentCalories: mealCalories[.dinner] ?? 0, totalCalories: NutritionAnalysisService.shared.calculateMealGoal(for: .dinner, user: user))
+                    MealRowView(iconName: "takeoutbag.and.cup.and.straw.fill", mealName: "Snacks", currentCalories: mealCalories[.snack] ?? 0, totalCalories: NutritionAnalysisService.shared.calculateMealGoal(for: .snack, user: user))
+                }
+                .padding(.horizontal)
+
+                Spacer()
+            }
+            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden(true)
+            .alert(isPresented: $showGoalSetupAlert) {
+                Alert(
+                    title: Text("Nutrition Goals Not Set"),
+                    message: Text("Please set your nutrition and meal distribution goals in your profile to use the dashboard."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+            .onAppear {
+                if !user.hasSetGoal {
+                    showGoalSetupAlert = true
+                }
+                withAnimation(.easeInOut(duration: 1.0)) {
+                    animatedProgress = Double(totalCalories) / Double(calorieGoal == 0 ? 1 : calorieGoal)
+                }
+            }
+        } else {
+            ProgressView("Loading user data...")
+                .onAppear {
+                    fetchUserData()
+                    analyzeNutrition()
+                }
         }
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
     }
 
-    // MARK: - Fetch User's First Name from Firestore
+    // MARK: - Fetch User Data
     private func fetchUserData() {
         FirestoreService.shared.fetchUserData { fetchedUser in
             DispatchQueue.main.async {
                 self.user = fetchedUser
-                print("✅ User Data Fetched: \(fetchedUser?.firstName ?? "Unknown")")
+                self.calorieGoal = fetchedUser?.calorieGoal ?? 2000
+
+                if fetchedUser?.hasSetGoal == false {
+                    self.showGoalSetupAlert = true
+                }
+            }
+        }
+    }
+
+    // MARK: - Analyze Nutrition
+    private func analyzeNutrition() {
+        NutritionAnalysisService.shared.analyzeNutrition(for: selectedDate) { calories, goal, carbs, protein, fats, mealsByType in
+            DispatchQueue.main.async {
+                self.totalCalories = calories
+                self.calorieGoal = goal
+                self.totalCarbs = carbs
+                self.totalProtein = protein
+                self.totalFats = fats
+                self.mealCalories = mealsByType
+
+                withAnimation(.easeInOut(duration: 1.0)) {
+                    self.animatedProgress = Double(calories) / Double(goal == 0 ? 1 : goal)
+                }
             }
         }
     }

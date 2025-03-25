@@ -1,20 +1,18 @@
 import SwiftUI
 
 struct EditCalorieGoalView: View {
-    // MARK: - Binding to Model
-    @Binding var nutritionGoal: NutritionGoal
+    // MARK: - Binding to UserModel
+    @Binding var user: UserModel
 
     // MARK: - State
     @State private var newCalorieGoal: String = ""
     @State private var autoCalculate: Bool = false
-    @State private var selectedPreset: String = "Balanced"
+    @State private var selectedMacroPreset: String = "Balanced (50/25/25)"
+    @State private var selectedMealPreset: String = "Standard (25/35/30/10)"
+    @State private var autoMealSplit: Bool = false
 
-    let presets = [
-        "Balanced (50/25/25)": (50.0, 25.0, 25.0),
-        "High-Protein (40/35/25)": (40.0, 35.0, 25.0),
-        "Low-Carb (30/35/35)": (30.0, 35.0, 35.0),
-        "Keto (10/30/60)": (10.0, 30.0, 60.0)
-    ]
+    let macroPresets = UserModel.macroPresets
+    let mealPresets = UserModel.mealPresets
 
     @Environment(\.presentationMode) var presentationMode
 
@@ -24,40 +22,69 @@ struct EditCalorieGoalView: View {
             Section(header: Text("Set Your Daily Calorie Goal")) {
                 TextField("Enter new calorie goal", text: $newCalorieGoal)
                     .keyboardType(.numberPad)
-                    .onChange(of: newCalorieGoal) { newValue in
+                    .onChange(of: newCalorieGoal) { _ in
                         if autoCalculate {
                             updateCalorieGoal()
                         }
                     }
 
                 Toggle("Auto-Calculate Macros", isOn: $autoCalculate)
-                    .onChange(of: autoCalculate) { newValue in
-                        if newValue {
-                            updateCalorieGoal()
+                    .onChange(of: autoCalculate) { _ in
+                        if autoCalculate {
+                            applyMacroPreset()
                         }
                     }
             }
 
             if autoCalculate {
-                // MARK: - Preset Selection
+                // MARK: - Macro Presets
                 Section(header: Text("Macro Presets")) {
-                    Picker("Select a Preset", selection: $selectedPreset) {
-                        ForEach(presets.keys.sorted(), id: \.self) { preset in
+                    Picker("Select a Preset", selection: $selectedMacroPreset) {
+                        ForEach(macroPresets.keys.sorted(), id: \.self) { preset in
                             Text(preset)
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
-                    .onChange(of: selectedPreset) { newValue in
-                        applyPreset()
+                    .onChange(of: selectedMacroPreset) { _ in
+                        applyMacroPreset()
                     }
                 }
             }
 
-            // MARK: - Macronutrient Inputs
-            Section(header: Text("Macronutrient Goals (grams)")) {
-                Text("Carbs: \(nutritionGoal.carbGrams)g")
-                Text("Protein: \(nutritionGoal.proteinGrams)g")
-                Text("Fats: \(nutritionGoal.fatGrams)g")
+            // MARK: - Macronutrient Values
+            Section(header: Text("Macronutrient Targets (%)")) {
+                Text("Carbs: \(Int(user.carbPercentage))%")
+                Text("Protein: \(Int(user.proteinPercentage))%")
+                Text("Fats: \(Int(user.fatPercentage))%")
+            }
+
+            // MARK: - Meal Distribution
+            Section(header: Text("Meal Distribution")) {
+                Toggle("Auto-Split Meals", isOn: $autoMealSplit)
+                    .onChange(of: autoMealSplit) { _ in
+                        if autoMealSplit {
+                            applyMealPreset()
+                        }
+                    }
+
+                if autoMealSplit {
+                    Picker("Meal Split Preset", selection: $selectedMealPreset) {
+                        ForEach(mealPresets.keys.sorted(), id: \.self) { preset in
+                            Text(preset)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .onChange(of: selectedMealPreset) { _ in
+                        applyMealPreset()
+                    }
+                } else {
+                    VStack(alignment: .leading) {
+                        Text("Breakfast: \(Int(user.breakfastPercentage))%")
+                        Text("Lunch: \(Int(user.lunchPercentage))%")
+                        Text("Dinner: \(Int(user.dinnerPercentage))%")
+                        Text("Snacks: \(Int(user.snackPercentage))%")
+                    }
+                }
             }
 
             // MARK: - Save Button
@@ -75,35 +102,45 @@ struct EditCalorieGoalView: View {
         }
         .navigationTitle("Edit Nutrition Goals")
         .onAppear {
-            newCalorieGoal = String(nutritionGoal.calorieGoal)
-            autoCalculate = nutritionGoal.isAutoCalculated
-            selectedPreset = nutritionGoal.selectedPreset
+            newCalorieGoal = String(user.calorieGoal)
+            autoCalculate = true
+            selectedMacroPreset = user.selectedPreset ?? "Balanced (50/25/25)"
+            selectedMealPreset = user.mealDistributionPreset ?? "Standard (25/35/30/10)"
         }
     }
 
     // MARK: - Update Calorie Goal
     private func updateCalorieGoal() {
         if let calorieInt = Int(newCalorieGoal), calorieInt > 0 {
-            nutritionGoal.calorieGoal = calorieInt
-            nutritionGoal.calculateMacros()
+            user.calorieGoal = calorieInt
         }
     }
 
-    // MARK: - Apply Preset
-    private func applyPreset() {
-        if let (carb, protein, fat) = presets[selectedPreset] {
-            nutritionGoal.carbPercentage = carb
-            nutritionGoal.proteinPercentage = protein
-            nutritionGoal.fatPercentage = fat
-            nutritionGoal.selectedPreset = selectedPreset
-            nutritionGoal.calculateMacros()
+    // MARK: - Apply Macro Preset
+    private func applyMacroPreset() {
+        if let (carb, protein, fat) = macroPresets[selectedMacroPreset] {
+            user.carbPercentage = carb
+            user.proteinPercentage = protein
+            user.fatPercentage = fat
+            user.selectedPreset = selectedMacroPreset
+        }
+    }
+
+    // MARK: - Apply Meal Preset
+    private func applyMealPreset() {
+        if let (breakfast, lunch, dinner, snack) = mealPresets[selectedMealPreset] {
+            user.breakfastPercentage = breakfast
+            user.lunchPercentage = lunch
+            user.dinnerPercentage = dinner
+            user.snackPercentage = snack
+            user.mealDistributionPreset = selectedMealPreset
         }
     }
 
     // MARK: - Save Changes
     private func saveChanges() {
         if let newGoal = Int(newCalorieGoal), newGoal > 0 {
-            nutritionGoal.calorieGoal = newGoal
+            user.calorieGoal = newGoal
         }
         presentationMode.wrappedValue.dismiss()
     }
@@ -111,11 +148,16 @@ struct EditCalorieGoalView: View {
 
 // MARK: - Preview
 struct EditCalorieGoalView_Previews: PreviewProvider {
-    @State static var nutritionGoal = NutritionGoal.defaultGoal
+    @State static var previewUser = UserModel(
+        id: "test",
+        firstName: "Val",
+        lastName: "User",
+        email: "test@example.com"
+    )
 
     static var previews: some View {
         NavigationView {
-            EditCalorieGoalView(nutritionGoal: $nutritionGoal)
+            EditCalorieGoalView(user: $previewUser)
         }
     }
 }
