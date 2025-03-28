@@ -19,7 +19,6 @@ struct ProfileView: View {
                             Circle()
                                 .stroke(Color.accentColor, lineWidth: 3)
                         )
-                        // Reduced top padding from 40 to 20
                         .padding(.top, 20)
 
                     Text("\(user.firstName) \(user.lastName)")

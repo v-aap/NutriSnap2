@@ -1,8 +1,3 @@
-//
-//  NutriSnap2App.swift
-//  NutriSnap2
-//
-
 import SwiftUI
 import FirebaseCore
 import FirebaseAuth
@@ -11,9 +6,9 @@ import FirebaseAuth
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        print("???? Firebase is configuring...") // Debug Log
+        print("???? Firebase is configuring...")
         FirebaseApp.configure()
-        print("Firebase configured successfully") //  Debug Log
+        print("Firebase configured successfully")
         return true
     }
 }
@@ -23,7 +18,7 @@ struct NutriSnap2App: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
     @State private var isUserLoggedIn: Bool = false
-    @State private var showSplash = true  
+    @State private var showSplash = true
 
     init() {
         print("App Initialized")
@@ -31,7 +26,8 @@ struct NutriSnap2App: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationView {
+            // Remove the outer NavigationView and use a Group instead
+            Group {
                 if showSplash {
                     SplashScreenView()
                         .onAppear {
@@ -41,27 +37,19 @@ struct NutriSnap2App: App {
                         }
                 } else {
                     if isUserLoggedIn {
-                        RootContainerView()  // Show Dashboard if logged in
+                        RootContainerView()  // RootContainerView already has its own NavigationViews
                     } else {
-                        SignInView()  // Show Sign In screen if not logged in
+                        SignInView()
                     }
                 }
             }
             .onAppear {
-                Auth.auth().addStateDidChangeListener { _, user in
+                _ = Auth.auth().addStateDidChangeListener { _, user in
                     isUserLoggedIn = (user != nil)
                 }
             }
         }
     }
-
-    // Ensure Firebase is set up correctly
-    private func setupFirebase() {
-        if FirebaseApp.app() == nil {
-            print("⚠️ FirebaseApp is not configured, configuring now...")
-            FirebaseApp.configure()
-        } else {
-            print("✅ FirebaseApp is already configured.")
-        }
-    }
+    
+    // Optionally, you can remove the setupFirebase() function if it's not used.
 }

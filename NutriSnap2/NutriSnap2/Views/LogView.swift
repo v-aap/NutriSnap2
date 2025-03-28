@@ -72,8 +72,6 @@ struct LogView: View {
             Spacer()
         }
         .padding()
-        // Only ignore the bottom if you want the background to go behind the tab bar:
-        // .edgesIgnoringSafeArea(.bottom)
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(image: $image, sourceType: sourceType)
         }
