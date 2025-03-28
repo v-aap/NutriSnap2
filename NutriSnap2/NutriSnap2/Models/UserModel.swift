@@ -12,7 +12,7 @@ struct UserModel: Identifiable, Codable {
     var carbGrams: Double = 250.0
     var proteinGrams: Double = 125.0
     var fatGrams: Double = 56.0
-    var selectedPreset: String? = nil  // Allows user to override preset
+    var selectedPreset: String? = nil
 
     // Meal-Specific Calorie Distribution
     var mealDistributionPreset: String? = nil
@@ -21,7 +21,7 @@ struct UserModel: Identifiable, Codable {
     var dinnerPercentage: Double = 30.0
     var snackPercentage: Double = 10.0
 
-    // MARK: - Preset Options for Macros (in grams)
+    // MARK: - Preset Options for Macros
     static func macroGramsPreset(for calories: Int) -> [String: (Double, Double, Double)] {
         return [
             "Balanced (50/25/25)": (
@@ -55,7 +55,7 @@ struct UserModel: Identifiable, Codable {
         "Big Dinner (20/30/40/10)": (20.0, 30.0, 40.0, 10.0)
     ]
 
-    // MARK: - Convert Firestore Data to UserModel
+    // MARK: - Firestore Data Conversion
     static func fromFirestore(id: String, data: [String: Any]) -> UserModel? {
         guard let firstName = data["firstName"] as? String,
               let lastName = data["lastName"] as? String,
@@ -83,7 +83,6 @@ struct UserModel: Identifiable, Codable {
         )
     }
 
-    // MARK: - Convert to Firestore Data
     func toFirestore() -> [String: Any] {
         return [
             "firstName": firstName,
@@ -101,5 +100,25 @@ struct UserModel: Identifiable, Codable {
             "dinnerPercentage": dinnerPercentage,
             "snackPercentage": snackPercentage
         ]
+    }
+
+    // MARK: - Update Methods
+    mutating func updateMacros(carbs: Double, protein: Double, fats: Double, preset: String) {
+        self.carbGrams = carbs
+        self.proteinGrams = protein
+        self.fatGrams = fats
+        self.selectedPreset = preset
+    }
+
+    mutating func updateMeals(breakfast: Double, lunch: Double, dinner: Double, snack: Double, preset: String) {
+        self.breakfastPercentage = breakfast
+        self.lunchPercentage = lunch
+        self.dinnerPercentage = dinner
+        self.snackPercentage = snack
+        self.mealDistributionPreset = preset
+    }
+
+    func saveToFirestore(completion: @escaping (Bool) -> Void) {
+        FirestoreService.shared.updateUserGoals(self, completion: completion)
     }
 }

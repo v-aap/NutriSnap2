@@ -3,16 +3,15 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct EditCalorieGoalView: View {
-    // MARK: - Binding to UserModel
     @Binding var user: UserModel
 
-    // MARK: - State
+    // MARK: - States
     @State private var newCalorieGoal: String = ""
     @State private var autoCalculate: Bool = true
     @State private var selectedMacroPreset: String = "Balanced (50/25/25)"
     @State private var selectedMealPreset: String = "Standard (25/35/30/10)"
     @State private var autoMealSplit: Bool = true
-    @State private var macroPresets: [String: (Double, Double, Double)] = UserModel.macroGramsPreset(for: 2000)
+    @State private var macroPresets: [String: (Double, Double, Double)] = [:]
 
     @State private var carbInput: String = ""
     @State private var proteinInput: String = ""
@@ -23,237 +22,253 @@ struct EditCalorieGoalView: View {
     @State private var dinnerInput: String = ""
     @State private var snackInput: String = ""
 
+    @State private var manualOverrideCalories: String? = nil
+
     let mealPresets = UserModel.mealPresets
     @Environment(\.presentationMode) var presentationMode
 
+    // MARK: - Body
     var body: some View {
         Form {
-            // MARK: - Calorie Goal Input
-            Section(header: Text("Set Your Daily Calorie Goal")) {
-                TextField("Enter new calorie goal", text: $newCalorieGoal)
-                    .keyboardType(.numberPad)
-                    .onChange(of: newCalorieGoal) { _ in
-                        if autoCalculate {
-                            updateCalorieGoal()
-                            macroPresets = UserModel.macroGramsPreset(for: user.calorieGoal)
-                            applyMacroPreset()
-                        }
-                    }
-
-                Toggle("Auto-Calculate Macros", isOn: $autoCalculate)
-                    .onChange(of: autoCalculate) { isOn in
-                        if isOn {
-                            applyMacroPreset()
-                        } else {
-                            user.carbGrams = Double(carbInput) ?? user.carbGrams
-                            user.proteinGrams = Double(proteinInput) ?? user.proteinGrams
-                            user.fatGrams = Double(fatInput) ?? user.fatGrams
-                        }
-                    }
-            }
-
-            if autoCalculate {
-                Section(header: Text("Macro Presets")) {
-                    Picker("Select a Preset", selection: $selectedMacroPreset) {
-                        ForEach(macroPresets.keys.sorted(), id: \.self) { preset in
-                            Text(preset)
-                        }
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                    .onChange(of: selectedMacroPreset) { _ in
-                        applyMacroPreset()
-                    }
-                }
-            }
-
-            // MARK: - Macronutrient Input
-            Section(header: Text("Macronutrient Targets (grams)")) {
-                HStack {
-                    Text("Carbs")
-                    Spacer()
-                    TextField("g", text: $carbInput)
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.trailing)
-                }
-                HStack {
-                    Text("Protein")
-                    Spacer()
-                    TextField("g", text: $proteinInput)
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.trailing)
-                }
-                HStack {
-                    Text("Fats")
-                    Spacer()
-                    TextField("g", text: $fatInput)
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.trailing)
-                }
-            }
-
-            // MARK: - Meal Distribution
-            Section(header: Text("Meal Distribution")) {
-                Toggle("Auto-Split Meals", isOn: $autoMealSplit)
-                    .onChange(of: autoMealSplit) { isOn in
-                        if isOn {
-                            applyMealPreset()
-                        } else {
-                            user.breakfastPercentage = Double(breakfastInput) ?? user.breakfastPercentage
-                            user.lunchPercentage = Double(lunchInput) ?? user.lunchPercentage
-                            user.dinnerPercentage = Double(dinnerInput) ?? user.dinnerPercentage
-                            user.snackPercentage = Double(snackInput) ?? user.snackPercentage
-                        }
-                    }
-
-                if autoMealSplit {
-                    Picker("Meal Split Preset", selection: $selectedMealPreset) {
-                        ForEach(mealPresets.keys.sorted(), id: \.self) { preset in
-                            Text(preset)
-                        }
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                    .onChange(of: selectedMealPreset) { _ in
-                        applyMealPreset()
-                    }
-                } else {
-                    HStack {
-                        Text("Breakfast")
-                        Spacer()
-                        TextField("%", text: $breakfastInput)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                    }
-                    HStack {
-                        Text("Lunch")
-                        Spacer()
-                        TextField("%", text: $lunchInput)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                    }
-                    HStack {
-                        Text("Dinner")
-                        Spacer()
-                        TextField("%", text: $dinnerInput)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                    }
-                    HStack {
-                        Text("Snacks")
-                        Spacer()
-                        TextField("%", text: $snackInput)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                    }
-                }
-            }
-
-            // MARK: - Save Button
-            Section {
-                Button(action: saveChanges) {
-                    Text("Save Changes")
-                        .bold()
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-            }
+            calorieGoalSection
+            macroPresetSection
+            macronutrientInputSection
+            mealDistributionSection
+            saveButtonSection
         }
         .navigationTitle("Edit Nutrition Goals")
-        .onAppear {
-            if !user.hasSetGoal {
-                user.calorieGoal = 2000
-                user.selectedPreset = "Balanced (50/25/25)"
-                user.mealDistributionPreset = "Standard (25/35/30/10)"
-                applyMacroPreset()
-                applyMealPreset()
-            }
+        .onAppear(perform: setupInitialValues)
+    }
 
-            newCalorieGoal = String(user.calorieGoal)
-            selectedMacroPreset = user.selectedPreset ?? "Balanced (50/25/25)"
-            selectedMealPreset = user.mealDistributionPreset ?? "Standard (25/35/30/10)"
-            macroPresets = UserModel.macroGramsPreset(for: user.calorieGoal)
+    // MARK: - Sections
+    private var calorieGoalSection: some View {
+        Section(header: Text("Set Your Daily Calorie Goal")) {
+            TextField("Enter new calorie goal", text: $newCalorieGoal)
+                .keyboardType(.numberPad)
+                .onChange(of: newCalorieGoal) { newValue in
+                    print("[TextField] newCalorieGoal changed to: \(newValue)")
+                    if autoCalculate {
+                        if let goal = Int(newValue), goal > 0 {
+                            print("[AutoCalc] Updating macro presets for new goal: \(goal)")
+                            macroPresets = UserModel.macroGramsPreset(for: goal)
+                            applyMacroPreset()
+                        }
+                    } else {
+                        manualOverrideCalories = newValue
+                        print("[Manual Entry] Stored manualOverrideCalories = \(manualOverrideCalories ?? "")")
+                    }
+                }
 
-            carbInput = String(format: "%.0f", user.carbGrams)
-            proteinInput = String(format: "%.0f", user.proteinGrams)
-            fatInput = String(format: "%.0f", user.fatGrams)
-
-            breakfastInput = String(format: "%.0f", user.breakfastPercentage)
-            lunchInput = String(format: "%.0f", user.lunchPercentage)
-            dinnerInput = String(format: "%.0f", user.dinnerPercentage)
-            snackInput = String(format: "%.0f", user.snackPercentage)
+            Toggle("Auto-Calculate Macros", isOn: $autoCalculate)
+                .onChange(of: autoCalculate) { isOn in
+                    print("[Toggle] Auto-Calculate toggled: \(isOn)")
+                    if isOn {
+                        let input = manualOverrideCalories ?? newCalorieGoal
+                        if let goal = Int(input), goal > 0 {
+                            print("[Toggle] Re-applying macro preset for calorie goal: \(goal)")
+                            macroPresets = UserModel.macroGramsPreset(for: goal)
+                            applyMacroPreset()
+                            newCalorieGoal = input
+                        }
+                    }
+                }
         }
     }
 
-    // MARK: - Update Calorie Goal
+    private var macroPresetSection: some View {
+        if autoCalculate {
+            return AnyView(Section(header: Text("Macro Presets")) {
+                Picker("Select a Preset", selection: $selectedMacroPreset) {
+                    ForEach(macroPresets.keys.sorted(), id: \.self) { preset in
+                        Text(preset)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .onChange(of: selectedMacroPreset) { newPreset in
+                    print("[Picker] Macro preset changed to: \(newPreset)")
+                    if autoCalculate, let goal = Int(newCalorieGoal), goal > 0 {
+                        print("[Picker] Updating macros using preset \(newPreset) for goal: \(goal)")
+                        macroPresets = UserModel.macroGramsPreset(for: goal)
+                        applyMacroPreset()
+                    }
+                }
+            })
+        } else {
+            return AnyView(EmptyView())
+        }
+    }
+
+    private var macronutrientInputSection: some View {
+        Section(header: Text("Macronutrient Targets (grams)")) {
+            macroInputField("Carbs", binding: $carbInput)
+            macroInputField("Protein", binding: $proteinInput)
+            macroInputField("Fats", binding: $fatInput)
+        }
+    }
+
+    private var mealDistributionSection: some View {
+        Section(header: Text("Meal Distribution (%)")) {
+            Toggle("Auto-Split Meals", isOn: $autoMealSplit)
+                .onChange(of: autoMealSplit) { isOn in
+                    print("[Toggle] Auto Meal Split toggled: \(isOn)")
+                }
+            if autoMealSplit {
+                Picker("Meal Split Preset", selection: $selectedMealPreset) {
+                    ForEach(mealPresets.keys.sorted(), id: \.self) { Text($0) }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .onChange(of: selectedMealPreset) { newValue in
+                    print("[Picker] Meal preset changed to: \(newValue)")
+                    applyMealPreset()
+                }
+            } else {
+                mealInputField("Breakfast", binding: $breakfastInput)
+                mealInputField("Lunch", binding: $lunchInput)
+                mealInputField("Dinner", binding: $dinnerInput)
+                mealInputField("Snacks", binding: $snackInput)
+
+                if mealDistributionTotal() != 100 {
+                    Text("Total: \(String(format: "%.0f", mealDistributionTotal()))%. Adjust to 100%.")
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+            }
+        }
+    }
+
+    private var saveButtonSection: some View {
+        Section {
+            Button(action: saveChanges) {
+                Text("Save Changes")
+                    .bold()
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.green)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+        }
+    }
+
+    // MARK: - Helpers
+    private func updateCalorieGoalFromManualMacros() {
+        guard !autoCalculate else {
+            print("[Manual Macros] Skipped update due to autoCalculate being ON")
+            return
+        }
+        let carbs = Double(carbInput) ?? 0
+        let protein = Double(proteinInput) ?? 0
+        let fat = Double(fatInput) ?? 0
+        let totalCalories = (carbs * 4) + (protein * 4) + (fat * 9)
+        print("[Manual Macros] C=\(carbs), P=\(protein), F=\(fat), Total=\(totalCalories)")
+        user.calorieGoal = Int(totalCalories)
+        newCalorieGoal = "\(Int(totalCalories))"
+    }
+
+    private func macroInputField(_ title: String, binding: Binding<String>) -> some View {
+        HStack {
+            Text(title)
+            Spacer()
+            TextField("g", text: binding)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .onChange(of: binding.wrappedValue) { newValue in
+                    print("[Macro Input] \(title) changed to \(newValue)")
+                    if autoCalculate {
+                        print("[Macro Input] Auto-calculate disabled due to \(title) input")
+                        DispatchQueue.main.async {
+                            autoCalculate = false
+                        }
+                    }
+                    DispatchQueue.main.async {
+                        updateCalorieGoalFromManualMacros()
+                    }
+                }
+        }
+    }
+
+    private func mealInputField(_ title: String, binding: Binding<String>) -> some View {
+        HStack {
+            Text(title)
+            Spacer()
+            TextField("%", text: binding)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .onChange(of: binding.wrappedValue) { newValue in
+                    print("[Meal Input] \(title) changed to \(newValue)%")
+                    autoMealSplit = false
+                }
+        }
+    }
+
+    private func setupInitialValues() {
+        print("[Setup] Initializing UI with user model")
+        if newCalorieGoal.isEmpty {
+            newCalorieGoal = "\(user.calorieGoal)"
+            print("[Setup] Set newCalorieGoal to \(newCalorieGoal)")
+        }
+        selectedMacroPreset = user.selectedPreset ?? "Balanced (50/25/25)"
+        selectedMealPreset = user.mealDistributionPreset ?? "Standard (25/35/30/10)"
+        macroPresets = UserModel.macroGramsPreset(for: user.calorieGoal)
+        applyMacroPreset()
+        applyMealPreset()
+    }
+
     private func updateCalorieGoal() {
         if let goal = Int(newCalorieGoal), goal > 0 {
+            print("[Update Goal] Manually set user.calorieGoal to \(goal)")
             user.calorieGoal = goal
         }
     }
 
-// MARK: - Apply Macro Preset
     private func applyMacroPreset() {
-        let currentPresets = UserModel.macroGramsPreset(for: user.calorieGoal)
-        if let (carbs, protein, fats) = currentPresets[selectedMacroPreset] {
+        guard autoCalculate else {
+            print("[Apply Macro] Skipped due to autoCalculate OFF")
+            return
+        }
+        if let (carbs, protein, fats) = macroPresets[selectedMacroPreset] {
+            print("[Apply Macro] \(selectedMacroPreset) → C=\(carbs), P=\(protein), F=\(fats)")
             user.carbGrams = carbs
             user.proteinGrams = protein
             user.fatGrams = fats
             user.selectedPreset = selectedMacroPreset
-
             carbInput = String(format: "%.0f", carbs)
             proteinInput = String(format: "%.0f", protein)
             fatInput = String(format: "%.0f", fats)
         }
     }
 
-    // MARK: - Apply Meal Preset
     private func applyMealPreset() {
         if let (breakfast, lunch, dinner, snack) = mealPresets[selectedMealPreset] {
-            user.breakfastPercentage = breakfast
-            user.lunchPercentage = lunch
-            user.dinnerPercentage = dinner
-            user.snackPercentage = snack
-            user.mealDistributionPreset = selectedMealPreset
-
-            breakfastInput = String(format: "%.0f", breakfast)
-            lunchInput = String(format: "%.0f", lunch)
-            dinnerInput = String(format: "%.0f", dinner)
-            snackInput = String(format: "%.0f", snack)
+            print("[Apply Meal] \(selectedMealPreset) → B=\(breakfast), L=\(lunch), D=\(dinner), S=\(snack)")
+            user.updateMeals(breakfast: breakfast, lunch: lunch, dinner: dinner, snack: snack, preset: selectedMealPreset)
+            breakfastInput = "\(Int(breakfast))"
+            lunchInput = "\(Int(lunch))"
+            dinnerInput = "\(Int(dinner))"
+            snackInput = "\(Int(snack))"
         }
     }
 
-    // MARK: - Calculate Meal Calories
-    private func caloriesForMeal(_ percentage: Double) -> Int {
-        return Int(Double(user.calorieGoal) * (percentage / 100))
+    private func mealDistributionTotal() -> Double {
+        let total = [breakfastInput, lunchInput, dinnerInput, snackInput].compactMap(Double.init).reduce(0, +)
+        print("[Meal Total] Distribution = \(total)%")
+        return total
     }
 
-    // MARK: - Save Changes
     private func saveChanges() {
-        if let newGoal = Int(newCalorieGoal), newGoal > 0 {
-            user.calorieGoal = newGoal
-        }
-        if !autoCalculate {
-            user.carbGrams = Double(carbInput) ?? user.carbGrams
-            user.proteinGrams = Double(proteinInput) ?? user.proteinGrams
-            user.fatGrams = Double(fatInput) ?? user.fatGrams
-        }
-        if !autoMealSplit {
-            user.breakfastPercentage = Double(breakfastInput) ?? user.breakfastPercentage
-            user.lunchPercentage = Double(lunchInput) ?? user.lunchPercentage
-            user.dinnerPercentage = Double(dinnerInput) ?? user.dinnerPercentage
-            user.snackPercentage = Double(snackInput) ?? user.snackPercentage
-        }
-        user.hasSetGoal = true
-
-        FirestoreService.shared.updateUserGoals(user) { success in
-            if success {
-                print("✅ Goals saved to Firestore.")
-            } else {
-                print("❌ Failed to save goals.")
-            }
+        print("[Save] Saving user to Firestore...")
+        user.saveToFirestore { success in
+            print(success ? "✅ Goals saved." : "❌ Failed to save goals.")
             presentationMode.wrappedValue.dismiss()
         }
     }
+}
+
+#Preview {
+    EditCalorieGoalView(user: .constant(UserModel(
+        id: "preview-user",
+        firstName: "Test",
+        lastName: "User",
+        email: "test@example.com"
+    )))
 }
