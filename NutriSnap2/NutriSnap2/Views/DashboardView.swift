@@ -141,6 +141,9 @@ struct DashboardView: View {
                     )
                 }
                 .onAppear {
+                    fetchUserData()
+                    analyzeNutrition()
+                    
                     if user.hasSetGoal {
                         showGoalSetupAlert = false
                     } else {
