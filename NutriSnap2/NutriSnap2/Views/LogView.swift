@@ -17,11 +17,13 @@ struct LogView: View {
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(LinearGradient(
-                            gradient: Gradient(colors: [Color.green.opacity(0.7), Color.green]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ))
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [Color.green.opacity(0.7), Color.green]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                         .frame(width: 180, height: 180)
                         .shadow(radius: 8)
                     
@@ -38,17 +40,19 @@ struct LogView: View {
             }
             .padding()
 
-            // Manual Entry Button (Navigates to MealEntryView)
+            // Manual Entry Button
             Button(action: {
                 navigateToMealEntry = true
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(LinearGradient(
-                            gradient: Gradient(colors: [Color.green, Color.blue]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ))
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [Color.green, Color.blue]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                         .frame(width: 180, height: 180)
                         .shadow(radius: 8)
                     
@@ -68,14 +72,15 @@ struct LogView: View {
             Spacer()
         }
         .padding()
-        .background(Color.white.edgesIgnoringSafeArea(.all)) 
+        // Only ignore the bottom if you want the background to go behind the tab bar:
+        // .edgesIgnoringSafeArea(.bottom)
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(image: $image, sourceType: sourceType)
         }
         .fullScreenCover(isPresented: $navigateToMealEntry) {
             if let userID = Auth.auth().currentUser?.uid {
                 MealEntryView(meal: MealEntry(
-                    userID: userID, 
+                    userID: userID,
                     date: Date(),
                     foodName: "",
                     calories: 0,
@@ -86,7 +91,7 @@ struct LogView: View {
                     mealType: .breakfast
                 ))
             } else {
-                Text("Error: No user logged in") // Fallback in case user is not logged in
+                Text("Error: No user logged in")
             }
         }
     }
@@ -95,7 +100,9 @@ struct LogView: View {
 // MARK: - Preview
 struct LogView_Previews: PreviewProvider {
     static var previews: some View {
-        LogView()
-            .previewDevice("iPhone 14")
+        NavigationView {
+            LogView()
+                .navigationTitle("Log")
+        }
     }
 }

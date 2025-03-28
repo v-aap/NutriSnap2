@@ -4,12 +4,15 @@ import FirebaseAuth
 struct MealEntryView: View {
     
     // MARK: - Environment
-    @Environment(\ .presentationMode) var presentationMode  // Allows dismissing the view
+    @Environment(\.presentationMode) var presentationMode  // Allows dismissing the view
     
     // MARK: - State Variables
     @State var meal: MealEntry
     @State private var showErrorAlert = false
     @State private var errorMessage = ""
+    
+    // NEW: Controls whether the calendar sheet is presented
+    @State private var showDatePicker = false
     
     // MARK: - Body
     var body: some View {
@@ -29,7 +32,7 @@ struct MealEntryView: View {
                     )
                 
                 Picker("Select Type", selection: $meal.mealType) {
-                    ForEach(MealType.allCases, id: \ .self) { type in
+                    ForEach(MealType.allCases, id: \.self) { type in
                         Text(type.rawValue).tag(type)
                     }
                 }
@@ -38,6 +41,49 @@ struct MealEntryView: View {
                 .padding(.horizontal, 8)
             }
             .frame(maxWidth: .infinity)
+            
+            // MARK: - Date Selection
+            Text("Meal Date")
+                .font(.headline)
+            
+            // Display the selected date & a button to open the calendar
+            HStack {
+                Text("\(meal.date, style: .date)")
+                    .font(.body)
+                
+                Spacer()
+                
+                // Tap this to open the date picker (calendar)
+                Button {
+                    showDatePicker.toggle()
+                } label: {
+                    Image(systemName: "calendar")
+                        .foregroundColor(.blue)
+                }
+            }
+            // Sheet with a graphical calendar
+            .sheet(isPresented: $showDatePicker) {
+                VStack {
+                    Text("Select a Date")
+                        .font(.headline)
+                        .padding(.bottom, 8)
+                    
+                    // Restrict to past dates & today. Remove `in: ...Date()` if you want future dates too.
+                    DatePicker(
+                        "",
+                        selection: $meal.date,
+                        in: ...Date(),
+                        displayedComponents: .date
+                    )
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
+                    .onChange(of: meal.date) { _ in
+                        // Automatically close when a date is picked
+                        showDatePicker = false
+                    }
+                }
+                .padding()
+            }
             
             // MARK: - Food Name Input
             Text("Food Name")
@@ -147,14 +193,14 @@ struct MealEntryView: View {
             }
         }
     }
-    
-    
-    
-    // MARK: - Preview
-    struct MealEntryView_Previews: PreviewProvider {
-        static var previews: some View {
-            NavigationView {
-                MealEntryView(meal: MealEntry(
+}
+
+// MARK: - Preview
+struct MealEntryView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            MealEntryView(
+                meal: MealEntry(
                     userID: "testUserID",
                     date: Date(),
                     foodName: "Example Meal",
@@ -164,8 +210,8 @@ struct MealEntryView: View {
                     fats: 10,
                     isManualEntry: true,
                     mealType: .breakfast
-                ))
-            }
+                )
+            )
         }
     }
 }

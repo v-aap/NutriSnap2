@@ -32,7 +32,7 @@ struct DashboardView: View {
                         Spacer()
                     }
                     .padding(.horizontal)
-                    .padding(.top, 10)
+                    .padding(.top, 20)
 
                     // Date Navigation
                     HStack {
@@ -96,7 +96,6 @@ struct DashboardView: View {
                             Text("\(totalCarbs) g")
                                 .font(.headline)
                         }
-
                         VStack {
                             Text("Protein")
                                 .font(.subheadline)
@@ -104,7 +103,6 @@ struct DashboardView: View {
                             Text("\(totalProtein) g")
                                 .font(.headline)
                         }
-
                         VStack {
                             Text("Fats")
                                 .font(.subheadline)
@@ -196,6 +194,5 @@ struct DashboardView: View {
 struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
         DashboardView()
-            .previewDevice("iPhone 14 Plus")
     }
 }
