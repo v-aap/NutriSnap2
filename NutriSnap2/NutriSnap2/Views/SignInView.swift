@@ -86,7 +86,14 @@ struct SignInView: View {
                     RootContainerView()
                 }
                 .navigationDestination(isPresented: $navigateToGoalSetup) {
-                    EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal))
+                    EditCalorieGoalView(user: .constant(
+                        UserModel(
+                            id: UUID().uuidString,
+                            firstName: "",
+                            lastName: "",
+                            email: ""
+                        )
+                    ))
                 }
                 .navigationDestination(isPresented: $navigateToSignUp) {
                     SignUpView()

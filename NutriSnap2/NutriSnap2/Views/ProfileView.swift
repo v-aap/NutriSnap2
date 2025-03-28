@@ -19,7 +19,6 @@ struct ProfileView: View {
                             Circle()
                                 .stroke(Color.accentColor, lineWidth: 3)
                         )
-                        // Reduced top padding from 40 to 20
                         .padding(.top, 20)
 
                     Text("\(user.firstName) \(user.lastName)")
@@ -39,8 +38,17 @@ struct ProfileView: View {
                         SettingsRow(icon: "person.fill", color: .blue, title: "Personal Information")
                     }
 
-                    // Calorie Goal
-                    NavigationLink(destination: EditCalorieGoalView(nutritionGoal: .constant(NutritionGoal.defaultGoal))) {
+                    // Calorie Goal (Firebase-based editable user binding)
+                    NavigationLink(destination: EditCalorieGoalView(user: Binding(get: {
+                        self.user ?? UserModel(
+                            id: UUID().uuidString,
+                            firstName: "",
+                            lastName: "",
+                            email: ""
+                        )
+                    }, set: { newUser in
+                        self.user = newUser
+                    }))) {
                         SettingsRow(icon: "flame.fill", color: .orange, title: "Calorie Goal: \(user.calorieGoal) kcal/day")
                     }
 
@@ -77,7 +85,7 @@ struct ProfileView: View {
         }
     }
 
-    // Fetch User Data
+    // MARK: - Fetch User Data
     private func fetchUserData() {
         FirestoreService.shared.fetchUserData { fetchedUser in
             DispatchQueue.main.async {
@@ -86,7 +94,7 @@ struct ProfileView: View {
         }
     }
 
-    // Logout
+    // MARK: - Logout
     private func logout() {
         AuthService.shared.signOut { success, error in
             DispatchQueue.main.async {

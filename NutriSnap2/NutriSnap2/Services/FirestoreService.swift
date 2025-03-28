@@ -48,8 +48,9 @@ class FirestoreService {
         }
     }
 
-    // MARK: - Update User Goal
-    func updateUserGoal(_ goal: NutritionGoal, completion: @escaping (Bool) -> Void) {
+    // MARK: - Update User Goals (Macronutrients + Meal Distribution)
+    // MARK: - Update User Goals (Macronutrients in grams + Meal Distribution)
+    func updateUserGoals(_ goal: UserModel, completion: @escaping (Bool) -> Void) {
         guard let userID = AuthService.shared.getCurrentUserID() else {
             completion(false)
             return
@@ -57,25 +58,31 @@ class FirestoreService {
 
         let goalData: [String: Any] = [
             "calorieGoal": goal.calorieGoal,
-            "carbPercentage": goal.carbPercentage,
-            "proteinPercentage": goal.proteinPercentage,
-            "fatPercentage": goal.fatPercentage,
-            "selectedPreset": goal.selectedPreset,
+            "carbGrams": goal.carbGrams,
+            "proteinGrams": goal.proteinGrams,
+            "fatGrams": goal.fatGrams,
+            "selectedPreset": goal.selectedPreset as Any,
+            "mealDistributionPreset": goal.mealDistributionPreset as Any,
+            "breakfastPercentage": goal.breakfastPercentage,
+            "lunchPercentage": goal.lunchPercentage,
+            "dinnerPercentage": goal.dinnerPercentage,
+            "snackPercentage": goal.snackPercentage,
             "hasSetGoal": true
         ]
 
         db.collection("users").document(userID).updateData(goalData) { error in
             if let error = error {
-                print("❌ Error updating user goal: \(error.localizedDescription)")
+                print("❌ Error updating user goals: \(error.localizedDescription)")
                 completion(false)
             } else {
-                print("✅ User goal updated successfully.")
+                print("✅ User goals updated successfully.")
                 completion(true)
             }
         }
     }
 
-    // MARK: - Update User Profile
+
+    // MARK: - Update User Profile (Name, Email)
     func updateUserProfile(firstName: String, lastName: String, email: String, completion: @escaping (Bool) -> Void) {
         guard let userID = AuthService.shared.getCurrentUserID() else {
             completion(false)
@@ -98,7 +105,7 @@ class FirestoreService {
             }
         }
     }
-    
+
     // MARK: Save Meal Function
     func saveMeal(meal: MealEntry, completion: @escaping (Bool, String?) -> Void) {
         guard let userID = Auth.auth().currentUser?.uid else {
@@ -117,9 +124,7 @@ class FirestoreService {
         }
     }
 
-
-   
-    // MARK: - Fetch Meals
+    // MARK: - Fetch Meals (For Logged-in User)
     func fetchMeals(completion: @escaping ([MealEntry]) -> Void) {
         guard let userID = Auth.auth().currentUser?.uid else {
             completion([])
@@ -144,7 +149,7 @@ class FirestoreService {
             }
     }
 
-//    // MARK: - Delete Meal Entry
+    // MARK: - Delete Meal Entry
     func deleteMealEntry(mealID: String, completion: @escaping (Bool) -> Void) {
         db.collection("meals").document(mealID).delete { error in
             if let error = error {

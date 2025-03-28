@@ -15,7 +15,7 @@ struct MealDetailView: View {
                 .bold()
                 .padding()
 
-            Text("Meal Type: \(meal.mealType)")
+            Text("Meal Type: \(meal.mealType.rawValue)")
                 .font(.title2)
                 .padding(.bottom, 5)
 
