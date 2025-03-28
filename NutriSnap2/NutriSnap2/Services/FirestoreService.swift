@@ -49,6 +49,7 @@ class FirestoreService {
     }
 
     // MARK: - Update User Goals (Macronutrients + Meal Distribution)
+    // MARK: - Update User Goals (Macronutrients in grams + Meal Distribution)
     func updateUserGoals(_ goal: UserModel, completion: @escaping (Bool) -> Void) {
         guard let userID = AuthService.shared.getCurrentUserID() else {
             completion(false)
@@ -57,11 +58,11 @@ class FirestoreService {
 
         let goalData: [String: Any] = [
             "calorieGoal": goal.calorieGoal,
-            "carbPercentage": goal.carbPercentage,
-            "proteinPercentage": goal.proteinPercentage,
-            "fatPercentage": goal.fatPercentage,
-            "selectedPreset": goal.selectedPreset as Any, // Preset or custom
-            "mealDistributionPreset": goal.mealDistributionPreset as Any, // Preset or custom
+            "carbGrams": goal.carbGrams,
+            "proteinGrams": goal.proteinGrams,
+            "fatGrams": goal.fatGrams,
+            "selectedPreset": goal.selectedPreset as Any,
+            "mealDistributionPreset": goal.mealDistributionPreset as Any,
             "breakfastPercentage": goal.breakfastPercentage,
             "lunchPercentage": goal.lunchPercentage,
             "dinnerPercentage": goal.dinnerPercentage,
@@ -79,6 +80,7 @@ class FirestoreService {
             }
         }
     }
+
 
     // MARK: - Update User Profile (Name, Email)
     func updateUserProfile(firstName: String, lastName: String, email: String, completion: @escaping (Bool) -> Void) {

@@ -86,11 +86,11 @@ class NutritionAnalysisService {
                     mealCalories[meal.mealType, default: 0] += meal.calories
                 }
 
-                print("📊 Comparison Results:")
-                print("  ✅ Calories: \(totalCalories)/\(goals.calorieGoal)")
-                print("  ✅ Carbs: \(totalCarbs)g (\(goals.carbPercentage)%)")
-                print("  ✅ Protein: \(totalProtein)g (\(goals.proteinPercentage)%)")
-                print("  ✅ Fats: \(totalFats)g (\(goals.fatPercentage)%)")
+                print("Comparison Results:")
+                print("  Calories: \(totalCalories)/\(goals.calorieGoal)")
+                print("  Carbs: \(totalCarbs)g vs Goal: \(Int(goals.carbGrams))g")
+                print("  Protein: \(totalProtein)g vs Goal: \(Int(goals.proteinGrams))g")
+                print("  Fats: \(totalFats)g vs Goal: \(Int(goals.fatGrams))g")
 
                 completion(totalCalories, goals.calorieGoal, totalCarbs, totalProtein, totalFats, mealCalories)
             }

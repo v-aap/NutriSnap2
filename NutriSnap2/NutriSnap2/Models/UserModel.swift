@@ -9,26 +9,44 @@ struct UserModel: Identifiable, Codable {
 
     // Nutrition Goals
     var calorieGoal: Int = 2000
-    var carbPercentage: Double = 50.0
-    var proteinPercentage: Double = 25.0
-    var fatPercentage: Double = 25.0
+    var carbGrams: Double = 250.0
+    var proteinGrams: Double = 125.0
+    var fatGrams: Double = 56.0
     var selectedPreset: String? = nil  // Allows user to override preset
 
     // Meal-Specific Calorie Distribution
-    var mealDistributionPreset: String? = nil // Allows user-defined meal distribution
+    var mealDistributionPreset: String? = nil
     var breakfastPercentage: Double = 25.0
     var lunchPercentage: Double = 35.0
     var dinnerPercentage: Double = 30.0
     var snackPercentage: Double = 10.0
 
-    // MARK: - Preset Options for Macros
-    static let macroPresets: [String: (Double, Double, Double)] = [
-        "Balanced (50/25/25)": (50.0, 25.0, 25.0),
-        "High-Protein (40/35/25)": (40.0, 35.0, 25.0),
-        "Keto (10/30/60)": (10.0, 30.0, 60.0),
-        "Low-Carb (30/35/35)": (30.0, 35.0, 35.0)
-    ]
-    
+    // MARK: - Preset Options for Macros (in grams)
+    static func macroGramsPreset(for calories: Int) -> [String: (Double, Double, Double)] {
+        return [
+            "Balanced (50/25/25)": (
+                Double(calories) * 0.50 / 4,
+                Double(calories) * 0.25 / 4,
+                Double(calories) * 0.25 / 9
+            ),
+            "High-Protein (40/35/25)": (
+                Double(calories) * 0.40 / 4,
+                Double(calories) * 0.35 / 4,
+                Double(calories) * 0.25 / 9
+            ),
+            "Keto (10/30/60)": (
+                Double(calories) * 0.10 / 4,
+                Double(calories) * 0.30 / 4,
+                Double(calories) * 0.60 / 9
+            ),
+            "Low-Carb (30/35/35)": (
+                Double(calories) * 0.30 / 4,
+                Double(calories) * 0.35 / 4,
+                Double(calories) * 0.35 / 9
+            )
+        ]
+    }
+
     // MARK: - Preset Options for Meal Calorie Distribution
     static let mealPresets: [String: (Double, Double, Double, Double)] = [
         "Standard (25/35/30/10)": (25.0, 35.0, 30.0, 10.0),
@@ -42,7 +60,7 @@ struct UserModel: Identifiable, Codable {
         guard let firstName = data["firstName"] as? String,
               let lastName = data["lastName"] as? String,
               let email = data["email"] as? String else {
-            print("⚠️ Firestore data is missing required user fields!")
+            print("Firestore data is missing required user fields")
             return nil
         }
 
@@ -53,9 +71,9 @@ struct UserModel: Identifiable, Codable {
             email: email,
             hasSetGoal: data["hasSetGoal"] as? Bool ?? false,
             calorieGoal: data["calorieGoal"] as? Int ?? 2000,
-            carbPercentage: data["carbPercentage"] as? Double ?? 50.0,
-            proteinPercentage: data["proteinPercentage"] as? Double ?? 25.0,
-            fatPercentage: data["fatPercentage"] as? Double ?? 25.0,
+            carbGrams: data["carbGrams"] as? Double ?? 250.0,
+            proteinGrams: data["proteinGrams"] as? Double ?? 125.0,
+            fatGrams: data["fatGrams"] as? Double ?? 56.0,
             selectedPreset: data["selectedPreset"] as? String,
             mealDistributionPreset: data["mealDistributionPreset"] as? String,
             breakfastPercentage: data["breakfastPercentage"] as? Double ?? 25.0,
@@ -73,11 +91,11 @@ struct UserModel: Identifiable, Codable {
             "email": email,
             "hasSetGoal": hasSetGoal,
             "calorieGoal": calorieGoal,
-            "carbPercentage": carbPercentage,
-            "proteinPercentage": proteinPercentage,
-            "fatPercentage": fatPercentage,
-            "selectedPreset": selectedPreset as Any, // Allow nil for custom values
-            "mealDistributionPreset": mealDistributionPreset as Any, // Allow nil for custom values
+            "carbGrams": carbGrams,
+            "proteinGrams": proteinGrams,
+            "fatGrams": fatGrams,
+            "selectedPreset": selectedPreset as Any,
+            "mealDistributionPreset": mealDistributionPreset as Any,
             "breakfastPercentage": breakfastPercentage,
             "lunchPercentage": lunchPercentage,
             "dinnerPercentage": dinnerPercentage,
