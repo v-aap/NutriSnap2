@@ -161,4 +161,73 @@ class FirestoreService {
             }
         }
     }
+    
+    // MARK: - Save Favorite Meal
+    func saveFavoriteMeal(_ meal: FavoriteMeal, completion: @escaping (Bool, String?) -> Void) {
+        let mealData = meal.toFirestore()
+        db.collection("favorites").document(meal.id.uuidString).setData(mealData) { error in
+            if let error = error {
+                print("❌ Error saving favorite meal: \(error.localizedDescription)")
+                completion(false, error.localizedDescription)
+            } else {
+                print("✅ Favorite meal saved successfully.")
+                completion(true, nil)
+            }
+        }
+    }
+
+    // MARK: - Fetch Favorite Meals (For Logged-in User)
+    func fetchFavoriteMeals(completion: @escaping ([FavoriteMeal]) -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            completion([])
+            return
+        }
+
+        db.collection("favorites")
+            .whereField("userID", isEqualTo: userID)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("❌ Error fetching favorite meals: \(error.localizedDescription)")
+                    completion([])
+                    return
+                }
+
+                let favorites = snapshot?.documents.compactMap { doc in
+                    FavoriteMeal.fromFirestore(id: doc.documentID, data: doc.data())
+                } ?? []
+
+                completion(favorites)
+            }
+    }
+
+    // MARK: - Delete Favorite Meal (Optional)
+    func deleteFavoriteMeal(favoriteID: UUID, completion: @escaping (Bool) -> Void) {
+        db.collection("favorites").document(favoriteID.uuidString).delete { error in
+            if let error = error {
+                print("❌ Error deleting favorite meal: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                print("✅ Favorite meal deleted successfully.")
+                completion(true)
+            }
+        }
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
