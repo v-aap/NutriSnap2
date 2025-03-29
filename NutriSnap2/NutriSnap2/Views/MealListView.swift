@@ -32,7 +32,7 @@ struct MealListView: View {
                     selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.blue)
+                        .foregroundColor(.green)
                 }
                 
                 Spacer()
@@ -50,7 +50,7 @@ struct MealListView: View {
                     selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
                 }) {
                     Image(systemName: "chevron.right")
-                        .foregroundColor(.blue)
+                        .foregroundColor(.green)
                 }
             }
             .padding(.horizontal)
@@ -92,6 +92,7 @@ struct MealListView: View {
                 DatePicker("Choose Date", selection: $selectedDate, displayedComponents: .date)
                     .datePickerStyle(GraphicalDatePickerStyle())
                     .padding()
+                    .tint(.green)
 
                 Spacer()
 
@@ -149,7 +150,7 @@ struct MealListView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             MealListView()
-                .navigationTitle("Meals")
+//                .navigationTitle("Meals")
                 .navigationBarTitleDisplayMode(.inline)
         }
     }

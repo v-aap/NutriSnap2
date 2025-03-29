@@ -58,7 +58,7 @@ struct MealEntryView: View {
                     showDatePicker.toggle()
                 } label: {
                     Image(systemName: "calendar")
-                        .foregroundColor(.blue)
+                        .foregroundColor(.green)
                 }
             }
             // Sheet with a graphical calendar

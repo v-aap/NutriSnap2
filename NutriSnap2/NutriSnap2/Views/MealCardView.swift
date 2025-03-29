@@ -23,25 +23,21 @@ struct MealCardView: View {
 
                 HStack(spacing: 20) {
                     VStack {
-                        Text("🔥")
                         Text("\(meal.calories) kcal")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
                     VStack {
-                        Text("🥩")
                         Text("\(meal.protein)g")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
                     VStack {
-                        Text("🍞")
                         Text("\(meal.carbs)g")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
                     VStack {
-                        Text("🧈")
                         Text("\(meal.fats)g")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
@@ -51,10 +47,10 @@ struct MealCardView: View {
                 if showType || showDate {
                     HStack {
                         if showType {
-                            Text("🍽 \(meal.mealType.rawValue)").font(.footnote).foregroundColor(.gray)
+                            Text("(meal.mealType.rawValue)").font(.footnote).foregroundColor(.gray)
                         }
                         if showDate {
-                            Text("📅 \(meal.date, style: .date)").font(.footnote).foregroundColor(.gray)
+                            Text("(meal.date, style: .date)").font(.footnote).foregroundColor(.gray)
                         }
                     }
                 }
