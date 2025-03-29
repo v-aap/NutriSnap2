@@ -23,6 +23,30 @@ class SignUpViewModel: ObservableObject {
         return ValidationService.passwordStrengthMessage(password) ?? "Strong password!"
     }
 
+    var firstNameMessage: String? {
+        ValidationService.nameValidationMessage(firstName)
+    }
+
+    var lastNameMessage: String? {
+        ValidationService.nameValidationMessage(lastName)
+    }
+
+    var emailMessage: String? {
+        ValidationService.emailValidationMessage(email)
+    }
+
+    var passwordMessage: String? {
+        let message = ValidationService.passwordStrengthMessage(password)
+        return message == "Strong password!" ? nil : message
+    }
+
+    var confirmPasswordMessage: String? {
+        if confirmPassword.isEmpty { return "Please confirm your password." }
+        if confirmPassword != password { return "Passwords do not match." }
+        return nil
+    }
+    
+    
     // MARK: - Sign Up Function
     func signUp(completion: @escaping (Bool) -> Void) {
         guard password == confirmPassword else {
@@ -42,4 +66,5 @@ class SignUpViewModel: ObservableObject {
             }
         }
     }
+        
 }
