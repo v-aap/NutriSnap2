@@ -38,6 +38,8 @@
 		C27F8E752D892EA800BDCDE0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C27F8E742D892EA800BDCDE0 /* GoogleService-Info.plist */; };
 		C27F8E842D8941DC00BDCDE0 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E832D8941DC00BDCDE0 /* AuthService.swift */; };
 		C27F8E8D2D89445A00BDCDE0 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27F8E8C2D89445A00BDCDE0 /* FirestoreService.swift */; };
+		C64107742D9891D30075E35C /* FavouriteMealModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64107732D9891D30075E35C /* FavouriteMealModel.swift */; };
+		C64107762D9891E90075E35C /* FavouriteMealsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64107752D9891E90075E35C /* FavouriteMealsView.swift */; };
 		C64290F82D8A1CBD006046C9 /* ValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290F72D8A1CBD006046C9 /* ValidationService.swift */; };
 		C64290FA2D8A1D31006046C9 /* ErrorHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290F92D8A1D31006046C9 /* ErrorHandlingService.swift */; };
 		C64290FC2D8A33B8006046C9 /* ReusableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64290FB2D8A33B8006046C9 /* ReusableViews.swift */; };
@@ -102,6 +104,8 @@
 		C27F8E742D892EA800BDCDE0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		C27F8E832D8941DC00BDCDE0 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		C27F8E8C2D89445A00BDCDE0 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
+		C64107732D9891D30075E35C /* FavouriteMealModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouriteMealModel.swift; sourceTree = "<group>"; };
+		C64107752D9891E90075E35C /* FavouriteMealsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouriteMealsView.swift; sourceTree = "<group>"; };
 		C64290F72D8A1CBD006046C9 /* ValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationService.swift; sourceTree = "<group>"; };
 		C64290F92D8A1D31006046C9 /* ErrorHandlingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandlingService.swift; sourceTree = "<group>"; };
 		C64290FB2D8A33B8006046C9 /* ReusableViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableViews.swift; sourceTree = "<group>"; };
@@ -206,6 +210,7 @@
 				18C2F8932D84AF470066CA1E /* SignUpViewModel.swift */,
 				18C2F8942D84AF470066CA1E /* MealEntryModel.swift */,
 				18C2F8952D84AF470066CA1E /* SignInViewModel.swift */,
+				C64107732D9891D30075E35C /* FavouriteMealModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -231,6 +236,7 @@
 				18C2F8C12D84BD510066CA1E /* SplashScreenView.swift */,
 				18C2F8C32D84BE640066CA1E /* RootContainerView.swift */,
 				C64290FB2D8A33B8006046C9 /* ReusableViews.swift */,
+				C64107752D9891E90075E35C /* FavouriteMealsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -397,6 +403,7 @@
 				18C2F8C42D84BE640066CA1E /* RootContainerView.swift in Sources */,
 				C64290FA2D8A1D31006046C9 /* ErrorHandlingService.swift in Sources */,
 				18C2F8B22D84AF470066CA1E /* MealEntryView.swift in Sources */,
+				C64107742D9891D30075E35C /* FavouriteMealModel.swift in Sources */,
 				18C2F8682D84AF0D0066CA1E /* ContentView.swift in Sources */,
 				18C2F8B32D84AF470066CA1E /* ProfileView.swift in Sources */,
 				18C2F8B42D84AF470066CA1E /* MealDetailView.swift in Sources */,
@@ -407,6 +414,7 @@
 				18C2F8B52D84AF470066CA1E /* ChangePasswordView.swift in Sources */,
 				18C2F8AE2D84AF470066CA1E /* SignInViewModel.swift in Sources */,
 				18C2F8AD2D84AF470066CA1E /* MealEntryModel.swift in Sources */,
+				C64107762D9891E90075E35C /* FavouriteMealsView.swift in Sources */,
 				C27F8E8D2D89445A00BDCDE0 /* FirestoreService.swift in Sources */,
 				C64290FE2D8A5293006046C9 /* NutritionAnalysisService.swift in Sources */,
 				18C2F8AC2D84AF470066CA1E /* SignUpViewModel.swift in Sources */,

@@ -1,107 +1,90 @@
+//
+//  FavouriteMealModel.swift
+//  NutriSnap2
+//
+//  Created by Valeria Arce on 2025-03-29.
+//
+
 import Foundation
 import FirebaseFirestore
 
-// MARK: - Meal Type Enum
-enum MealType: String, CaseIterable, Codable {
-    case breakfast = "Breakfast"
-    case lunch = "Lunch"
-    case dinner = "Dinner"
-    case snack = "Snack"
-}
-
-extension MealEntry {
-    init(from favorite: FavoriteMeal) {
-        self.id = UUID()
-        self.userID = favorite.userID
-        self.date = Date()
-        self.foodName = favorite.foodName
-        self.calories = favorite.calories
-        self.carbs = favorite.carbs
-        self.protein = favorite.protein
-        self.fats = favorite.fats
-        self.isManualEntry = true
-        self.mealType = favorite.mealType
-        self.photoURL = favorite.photoURL
-    }
-}
-
-// MARK: - MealEntry Model
-struct MealEntry: Identifiable, Codable {
+// MARK: - FavoriteMeal Model
+struct FavoriteMeal: Identifiable, Codable {
     var id: UUID
     var userID: String
-    var date: Date
     var foodName: String
     var calories: Int
     var carbs: Int
     var protein: Int
     var fats: Int
-    var isManualEntry: Bool
     var mealType: MealType
     var photoURL: String?
-
-    // Default Initializer
-    init(id: UUID = UUID(), userID: String, date: Date, foodName: String, calories: Int, carbs: Int, protein: Int, fats: Int, isManualEntry: Bool, mealType: MealType, photoURL: String? = nil) {
+    
+    // Initializer
+    init(id: UUID = UUID(), userID: String, foodName: String, calories: Int, carbs: Int, protein: Int, fats: Int, mealType: MealType, photoURL: String? = nil) {
         self.id = id
         self.userID = userID
-        self.date = date
         self.foodName = foodName
         self.calories = calories
         self.carbs = carbs
         self.protein = protein
         self.fats = fats
-        self.isManualEntry = isManualEntry
         self.mealType = mealType
         self.photoURL = photoURL
     }
-
-    // MARK: - Convert Firestore Data to MealEntry
-    static func fromFirestore(id: String, data: [String: Any]) -> MealEntry? {
+    
+    
+    
+    // MARK: - Convert Firestore Data to FavoriteMeal
+    static func fromFirestore(id: String, data: [String: Any]) -> FavoriteMeal? {
         guard let userID = data["userID"] as? String,
-              let timestamp = data["date"] as? Timestamp,
               let foodName = data["foodName"] as? String,
               let calories = data["calories"] as? Int,
               let carbs = data["carbs"] as? Int,
               let protein = data["protein"] as? Int,
               let fats = data["fats"] as? Int,
-              let isManualEntry = data["isManualEntry"] as? Bool,
               let mealTypeRaw = data["mealType"] as? String,
               let mealType = MealType(rawValue: mealTypeRaw) else {
             return nil
         }
-
-        return MealEntry(
+        
+        return FavoriteMeal(
             id: UUID(uuidString: id) ?? UUID(),
             userID: userID,
-            date: timestamp.dateValue(),
             foodName: foodName,
             calories: calories,
             carbs: carbs,
             protein: protein,
             fats: fats,
-            isManualEntry: isManualEntry,
             mealType: mealType,
             photoURL: data["photoURL"] as? String
         )
     }
-
+    
     // MARK: - Convert to Firestore Format
     func toFirestore() -> [String: Any] {
         return [
             "userID": userID,
-            "date": Timestamp(date: date),
             "foodName": foodName,
             "calories": calories,
             "carbs": carbs,
             "protein": protein,
             "fats": fats,
-            "isManualEntry": isManualEntry,
-            "mealType": mealType.rawValue, 
+            "mealType": mealType.rawValue,
             "photoURL": photoURL ?? ""
         ]
     }
-    
-    
-    
-    
-    
 }
+    // MARK: - Matching Helper
+    extension FavoriteMeal {
+        func isSame(as meal: MealEntry) -> Bool {
+            return self.userID == meal.userID &&
+                   self.foodName == meal.foodName &&
+                   self.calories == meal.calories &&
+                   self.carbs == meal.carbs &&
+                   self.protein == meal.protein &&
+                   self.fats == meal.fats &&
+                   self.mealType == meal.mealType
+        }
+    }
+
