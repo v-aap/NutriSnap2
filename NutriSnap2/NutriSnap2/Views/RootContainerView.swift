@@ -1,92 +1,120 @@
 import SwiftUI
 
 struct RootContainerView: View {
-    @State private var selectedTab: Int = 0  // 0 = Dashboard, 1 = Log, 2 = Meals, 3 = Profile
-    
+    @State private var selectedTab: Int = 0  // 0 = Dashboard, 1 = Favourites, 2 = Log, 3 = Meals, 4 = Profile
+    @State private var selectedFavoriteMeal: FavoriteMeal? = nil
+    @State private var showMealEntry = false
+
     var body: some View {
         VStack(spacing: 0) {
-            
+
             TabView(selection: $selectedTab) {
-                
-                // 1) Dashboard — no NavigationView (custom header inside DashboardView)
+
+                // Dashboard
                 DashboardView()
                     .tag(0)
-                
-                // 2) Log — standard nav bar
+
+                // Favourites
                 NavigationView {
-                    LogView()
-                        .navigationTitle("Log")
-                        .navigationBarTitleDisplayMode(.inline)
+                    FavouriteMealsView(onSelectFavorite: { meal in
+                        selectedFavoriteMeal = meal
+                        selectedTab = 2
+                        showMealEntry = true
+                    })
+                    .navigationTitle("Favourites")
+                    .navigationBarTitleDisplayMode(.inline)
                 }
                 .tag(1)
-                
-                // 3) Meals — standard nav bar
+
+                // Log
+                NavigationView {
+                    ZStack {
+                        LogView()
+                            .navigationTitle("Log")
+                            .navigationBarTitleDisplayMode(.inline)
+
+                        NavigationLink(destination:
+                            MealEntryView(meal: MealEntry(from: selectedFavoriteMeal ?? FavoriteMeal.placeholder)),
+                            isActive: $showMealEntry
+                        ) {
+                            EmptyView()
+                        }
+                    }
+                }
+                .tag(2)
+
+                // Meals
                 NavigationView {
                     MealListView()
                         .navigationTitle("Meals")
                         .navigationBarTitleDisplayMode(.inline)
                 }
-                .tag(2)
-                
-                // 4) Profile — standard nav bar
+                .tag(3)
+
+                // Profile
                 NavigationView {
                     ProfileView()
                         .navigationTitle("Profile")
                         .navigationBarTitleDisplayMode(.inline)
                 }
-                .tag(3)
+                .tag(4)
             }
-            // Only ignore bottom safe area so the tab bar is flush
             .edgesIgnoringSafeArea(.bottom)
-            
+
             // Custom Bottom Nav Bar
-            VStack(spacing: 0) {
+            ZStack {
                 Rectangle()
                     .fill(Color(UIColor.systemGroupedBackground))
                     .frame(height: 1)
                     .edgesIgnoringSafeArea(.horizontal)
-                
-                HStack {
+
+                HStack(spacing: 0) {
+                    Spacer()
+
                     Button(action: { selectedTab = 0 }) {
-                        VStack {
-                            Image(systemName: "house.fill")
-                            Text("Dashboard").font(.caption)
-                        }
+                        Image(systemName: "house.fill")
                     }
                     .foregroundColor(selectedTab == 0 ? .blue : .gray)
-                    
+
                     Spacer()
-                    
+
                     Button(action: { selectedTab = 1 }) {
-                        VStack {
-                            Image(systemName: "doc.text.fill")
-                            Text("Log").font(.caption)
-                        }
+                        Image(systemName: "star.fill")
                     }
                     .foregroundColor(selectedTab == 1 ? .blue : .gray)
-                    
+
                     Spacer()
-                    
+
                     Button(action: { selectedTab = 2 }) {
-                        VStack {
-                            Image(systemName: "fork.knife")
-                            Text("Meals").font(.caption)
+                        ZStack {
+                            Circle()
+                                .fill(Color.green)
+                                .frame(width: 60, height: 60)
+                                .shadow(radius: 4)
+                            Image(systemName: "plus")
+                                .foregroundColor(.white)
+                                .font(.system(size: 28, weight: .bold))
                         }
                     }
-                    .foregroundColor(selectedTab == 2 ? .blue : .gray)
-                    
+                    .offset(y: -20)
+
                     Spacer()
-                    
+
                     Button(action: { selectedTab = 3 }) {
-                        VStack {
-                            Image(systemName: "person.crop.circle")
-                            Text("Profile").font(.caption)
-                        }
+                        Image(systemName: "fork.knife")
                     }
                     .foregroundColor(selectedTab == 3 ? .blue : .gray)
+
+                    Spacer()
+
+                    Button(action: { selectedTab = 4 }) {
+                        Image(systemName: "person.crop.circle")
+                    }
+                    .foregroundColor(selectedTab == 4 ? .blue : .gray)
+
+                    Spacer()
                 }
-                .padding(.horizontal, 40)
-                .padding(.vertical, 12)
+                .padding(.bottom, 8)
                 .background(Color(UIColor.systemGroupedBackground))
             }
         }
@@ -96,5 +124,11 @@ struct RootContainerView: View {
 struct RootContainerView_Previews: PreviewProvider {
     static var previews: some View {
         RootContainerView()
+    }
+}
+
+extension FavoriteMeal {
+    static var placeholder: FavoriteMeal {
+        FavoriteMeal(userID: "", foodName: "", calories: 0, carbs: 0, protein: 0, fats: 0, mealType: .breakfast)
     }
 }
