@@ -257,3 +257,13 @@ struct EditCalorieGoalView: View {
         }
     }
 }
+
+// MARK: - Preview
+//struct EditCalorieGoalView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationView {
+//            EditCalorieGoalView()
+//                .navigationBarTitleDisplayMode(.inline)
+//        }
+//    }
+//}
